@@ -50,6 +50,7 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 | `templates/go`, `templates/python` | `mise.toml`, justfile, lint config, CI, dependabot, Dockerfile, gitignore per language (plus `.goreleaser.yaml` for Go CLIs). |
 | `templates/release/` | Release workflow per shape: container (GHCR), goreleaser, tag-only. |
 | `scripts/check-pr-title.sh` | Conventional Commit check for PR titles (CI). |
+| `scripts/check-agents-md.sh` | Keeps `AGENTS.md` (with its `@` imports) at 150 lines or fewer; part of `just check`. |
 | `lefthook.yml` | pre-commit fmt/lint, pre-push `just check`. |
 | `.github/` | PR template, PR-title check, security workflow (dependency review, CodeQL, weekly scans), `main` ruleset. |
 

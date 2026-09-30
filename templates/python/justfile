@@ -25,6 +25,10 @@ cover:
 vuln:
     uv run --with pip-audit pip-audit
 
+# AGENTS.md stays small: it is loaded on every agent turn.
+agents-md:
+    scripts/check-agents-md.sh 150
+
 # Secrets committed anywhere in git history.
 secrets:
     gitleaks git --no-banner --redact
@@ -36,4 +40,4 @@ workflows:
 tidy-check:
     uv lock --check
 
-check: fmt-check lint cover vuln secrets workflows tidy-check
+check: agents-md fmt-check lint cover vuln secrets workflows tidy-check
