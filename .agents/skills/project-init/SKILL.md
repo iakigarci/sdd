@@ -66,6 +66,8 @@ gh api -X PUT repos/{owner}/{repo}/actions/permissions/workflow \
 gh api -X POST repos/{owner}/{repo}/rulesets --input .github/rulesets/main.json
 ```
 
+Rulesets need a public repo or GitHub Pro/Team. On a private repo without them the last command returns 403: report that `main` is unprotected, and that the PR flow then rests on `AGENTS.md` alone.
+
 ## 5. Verify and ship
 
 1. `grep -rnE '\{\{[A-Z_]+\}\}' --exclude-dir=.git --exclude-dir=.agents .` prints nothing.
