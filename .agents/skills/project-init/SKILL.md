@@ -59,8 +59,8 @@ Work on a `chore/project-init` branch.
 Show the user these commands, then run them once they confirm:
 
 ```bash
-gh repo edit --enable-rebase-merge --enable-squash-merge=false --enable-merge-commit=false \
-  --delete-branch-on-merge --allow-update-branch
+gh repo edit --enable-squash-merge --squash-merge-commit-message pr-title-description \
+  --enable-rebase-merge=false --enable-merge-commit=false --delete-branch-on-merge --allow-update-branch
 gh api -X PUT repos/{owner}/{repo}/actions/permissions/workflow \
   -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true
 gh api -X POST repos/{owner}/{repo}/rulesets --input .github/rulesets/main.json
@@ -72,6 +72,6 @@ Rulesets need a public repo or GitHub Pro/Team. On a private repo without them t
 
 1. `grep -rnE '\{\{[A-Z_]+\}\}' --exclude-dir=.git --exclude-dir=.agents .` prints nothing.
 2. `lefthook install`, then `just check` passes.
-3. Commit (`chore: initialise project from template`), push, open the PR with the `pr` skill, and `gh pr checks --watch` until `check` and `commits` are green.
+3. Commit (`chore: initialise project from template`), push, open the PR with the `pr` skill, and `gh pr checks --watch` until `check` and `pr-title` are green.
 
-A missing tool is reported with its install command; the gate is never skipped silently. Done when CI is green on the PR: report its URL for the user to review and rebase-merge, then suggest `/grill-with-docs` for the first feature.
+A missing tool is reported with its install command; the gate is never skipped silently. Done when CI is green on the PR: report its URL for the user to review and squash-merge, then suggest `/grill-with-docs` for the first feature.

@@ -21,7 +21,7 @@ Implement the work described by the user in the spec or tickets.
 6. **Review**: use /code-review against `main`. Fix the actionable findings and rerun `just check`.
 7. **Ship as a PR**, following `AGENTS.md` → Git and pull requests:
    - Work on a `<type>/<issue>-<slug>` branch (create it from `main` first when you are on `main`).
-   - Commit using Conventional Commits, each commit building on its own; autosquash any `fixup!` commits.
-   - Push, then `gh pr create` with the body from the `pr` skill, evidence table included.
+   - Commit as often as useful; the PR is squash-merged into one commit.
+   - Push, then `gh pr create` with a Conventional Commit title and the body from the `pr` skill, evidence table included.
    - `gh pr checks --watch`; on a red check, read the log (`gh run view --log-failed`), fix, push, repeat until green.
    - Done when CI is green: report the PR URL. The user reviews and merges.
