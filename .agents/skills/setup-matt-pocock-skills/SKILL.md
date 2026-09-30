@@ -64,7 +64,7 @@ Offer **multi-context** (a root `GLOSSARY-MAP.md` pointing to per-context `GLOSS
 
 Show the user a draft of:
 
-- The `## Agent skills` block to add to whichever of `CLAUDE.md` / `AGENTS.md` is being edited (see step 4 for selection rules)
+- The `## Agent skills` block to add to the instruction file chosen in step 4
 - The contents of `docs/agents/issue-tracker.md`, `docs/agents/domain.md`, and `docs/agents/triage-labels.md` (the last only when `triage` is installed)
 
 Let them edit before writing.
@@ -73,11 +73,9 @@ Let them edit before writing.
 
 **Pick the file to edit:**
 
-- If `CLAUDE.md` exists, edit it.
-- Else if `AGENTS.md` exists, edit it.
-- If neither exists, ask the user which one to create; don't pick for them.
-
-Never create `AGENTS.md` when `CLAUDE.md` already exists (or vice versa); always edit the one that's already there.
+- If `AGENTS.md` exists, edit it. This holds even when `CLAUDE.md` exists too: in this repo `CLAUDE.md` only imports `AGENTS.md` (`@AGENTS.md`), and `AGENTS.md` is the file every agent reads.
+- Else if `CLAUDE.md` exists, edit it.
+- If neither exists, create `AGENTS.md`, plus a `CLAUDE.md` containing only `@AGENTS.md`.
 
 If an `## Agent skills` block already exists in the chosen file, update its contents in-place rather than appending a duplicate. Don't overwrite user edits to the surrounding sections.
 

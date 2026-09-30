@@ -77,6 +77,7 @@ db/queries/                    sqlc query files
 - Every goroutine has an owner that cancels it and waits for it (`errgroup`, `sync.WaitGroup`).
 - Outside repository ports: accept interfaces, return concrete types, define interfaces where they are consumed.
 - `log/slog` for logging, injected rather than global.
+- Dependencies are injected by hand: constructors take what they need, and `cmd/<service>/main.go` wires them. No DI library or container.
 - Configuration from environment variables into one typed struct, validated at startup in `internal/platform`.
 - Exported identifiers keep backward compatibility; `go mod tidy` leaves no diff.
 
