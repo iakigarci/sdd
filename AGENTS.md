@@ -15,7 +15,7 @@ Every gate runs through `just`, locally and in CI:
 - `just fmt`: format
 - `just lint`: linters and static analysis
 - `just test`: tests with the race detector
-- `just check`: the full gate (format check, lint, coverage threshold, vulnerabilities, dependency tidiness). Done means `just check` passed in this session.
+- `just check`: the full gate CI runs; its steps are the `check` recipe in `justfile`. Done means `just check` passed in this session.
 
 ## Token budget
 
