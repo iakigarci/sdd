@@ -27,6 +27,10 @@ The PR title follows [Conventional Commits](https://www.conventionalcommits.org/
 - Releases: merging to `main` updates a release-please PR (version bump + changelog from commit types). Merging that PR tags the release and runs the publish job: container image to GHCR for services, GoReleaser binaries for CLIs, tag only for libraries.
 - Dependabot opens weekly grouped updates with Conventional Commit prefixes, including the SHA pins of GitHub Actions.
 
+## Agent instructions
+
+- `AGENTS.md` is loaded on every agent turn, so it holds only what every task needs, capped at 150 lines including its `@` imports (`scripts/check-agents-md.sh`, part of `just check`). Detail goes in `docs/` or a skill, reached by a one-line pointer.
+
 ## Security and dependency checks
 
 | Check | Tool | Where |
