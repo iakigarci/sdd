@@ -1,0 +1,8 @@
+# gitleaks config: default rules, plus an allowlist for vendored skill docs,
+# whose "bad example" code blocks contain fake credentials.
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Vendored agent skills (documentation examples)"
+paths = ['''^\.agents/skills/''']
