@@ -1,0 +1,39 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+cover_min := "80"
+
+default: check
+
+fmt:
+    uv run ruff format .
+    uv run ruff check --fix .
+
+fmt-check:
+    uv run ruff format --check .
+
+lint:
+    uv run ruff check .
+    uv run ty check
+
+test:
+    uv run pytest
+
+cover:
+    uv run pytest --cov --cov-report=term-missing --cov-fail-under={{cover_min}}
+
+# Known vulnerabilities in locked dependencies.
+vuln:
+    uv run --with pip-audit pip-audit
+
+# Secrets committed anywhere in git history.
+secrets:
+    gitleaks git --no-banner --redact
+
+# GitHub Actions workflows: injection, unpinned actions, excessive permissions.
+workflows:
+    zizmor --no-progress --min-severity medium .github/workflows
+
+tidy-check:
+    uv lock --check
+
+check: fmt-check lint cover vuln secrets workflows tidy-check

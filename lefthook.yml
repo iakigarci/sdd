@@ -1,0 +1,15 @@
+# Git hooks. Install once per clone: `lefthook install`.
+commit-msg:
+  commands:
+    conventional-commit:
+      run: scripts/check-commits.sh --file {1}
+
+pre-commit:
+  commands:
+    fmt-and-lint:
+      run: just fmt-check lint
+
+pre-push:
+  commands:
+    gate:
+      run: just check

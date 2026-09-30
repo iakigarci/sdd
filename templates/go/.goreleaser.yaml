@@ -1,0 +1,21 @@
+# CLIs only: /project-init deletes this for services and libraries.
+version: 2
+builds:
+  - main: ./cmd/{{BINARY}}
+    binary: "{{BINARY}}"
+    env: [CGO_ENABLED=0]
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    flags: [-trimpath]
+    ldflags: ["-s -w -X main.version={{ .Version }}"]
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+checksum:
+  name_template: checksums.txt
+changelog:
+  disable: true # release-please writes the changelog
+release:
+  mode: keep-existing

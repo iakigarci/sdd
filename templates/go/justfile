@@ -1,0 +1,60 @@
+set shell := ["bash", "-euo", "pipefail", "-c"]
+
+cover_min := "80"
+
+default: check
+
+fmt:
+    golangci-lint fmt
+
+fmt-check:
+    golangci-lint fmt --diff
+
+lint:
+    golangci-lint run
+
+test:
+    go test -race -shuffle=on ./...
+
+# Adapters against real Postgres/NATS (testcontainers, needs Docker).
+test-integration:
+    go test -race -tags=integration ./...
+
+cover:
+    go test -race -shuffle=on -coverprofile=coverage.out ./...
+    # cmd/ only wires dependencies, so it is left out of the threshold.
+    grep -v '/cmd/' coverage.out > coverage.logic.out
+    go tool cover -func=coverage.logic.out | awk -v min={{cover_min}} '/^total:/ { sub("%", "", $3); if ($3 + 0 < min) { printf "coverage %s%% is below %s%%\n", $3, min; exit 1 } printf "coverage %s%%\n", $3 }'
+
+# Known vulnerabilities in dependencies and the standard library.
+vuln:
+    go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+# Secrets committed anywhere in git history.
+secrets:
+    gitleaks git --no-banner --redact
+
+# GitHub Actions workflows: injection, unpinned actions, excessive permissions.
+workflows:
+    zizmor --no-progress --min-severity medium .github/workflows
+
+tidy-check:
+    go mod tidy -diff
+
+# Protobuf lint + breaking changes against main; no-op without buf.yaml.
+proto:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -f buf.yaml ] || exit 0
+    buf lint
+    if git rev-parse --verify -q origin/main >/dev/null; then buf breaking --against '.git#ref=origin/main'; fi
+
+# Generated code is current; no-op without sqlc.yaml / buf.gen.yaml.
+generate-check:
+    @if [ -f sqlc.yaml ]; then sqlc diff && sqlc vet; fi
+    @if [ -f buf.gen.yaml ]; then buf generate && git diff --exit-code -- api/ internal/; fi
+
+build:
+    go build ./...
+
+check: fmt-check lint cover vuln secrets workflows tidy-check proto generate-check build

@@ -1,0 +1,7 @@
+.git
+.venv
+__pycache__
+coverage.out
+.coverage
+dist
+bin
