@@ -100,7 +100,7 @@ Standard library first. Anything outside this table is justified in the PR and a
 
 - `domain`: plain unit tests, no fakes needed.
 - `app`: unit tests with in-memory fakes of the ports.
-- `adapters`: integration tests against real Postgres and NATS via testcontainers, behind `//go:build integration`, run by `just test-integration` and the `integration` CI job.
+- `adapters`: integration tests against real Postgres and NATS via testcontainers, behind `//go:build integration`, run by `just test-integration` and the `integration` CI job. Container helpers (start, migrate, connect) live once in `internal/platform/testinfra`, behind the same build tag.
 - HTTP handlers through `httptest` against the Gin engine; gRPC through `bufconn`.
 - Table-driven tests with `t.Run`, `t.Parallel()` where safe, helpers call `t.Helper()`.
 - Benchmarks (`BenchmarkX`) for any criterion that states a latency or throughput target.

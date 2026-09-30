@@ -46,7 +46,7 @@ A finding is fixed, or suppressed inline with the reason (`//nolint:gosec // rea
 
 - Test behaviour through the public interface of a module, not its internals.
 - Every acceptance criterion and every `ASSUMP-#` maps to a test.
-- Coverage threshold is enforced by `just check` (default 80%). Go entry points under `cmd/` are excluded: they only wire dependencies.
+- Coverage threshold is enforced by `just check` (default 80%), measured across packages. Left out: Go entry points under `cmd/` (they only wire dependencies), generated code, and infrastructure adapters (`adapters/postgres|nats|grpc`, `platform/postgres|nats`), which the integration tests cover.
 
 ## Errors
 

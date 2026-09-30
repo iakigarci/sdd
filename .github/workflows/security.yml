@@ -9,8 +9,8 @@ on:
 permissions:
   contents: read
 
-# The template repo sets the IS_TEMPLATE variable: it has no code to scan and a
-# CodeQL language placeholder, so these jobs run only in generated projects.
+# Jobs skip when the repo variable IS_TEMPLATE is 'true' (set only on the
+# template repo, which has no code to scan).
 jobs:
   # New dependencies in the PR: known vulnerabilities and licences.
   # Needs the dependency graph: free on public repos, GitHub Code Security on private ones.
