@@ -190,7 +190,6 @@ For future Go versions, use the project's intended target version. Do not use AP
 
 - → See `samber/cc-skills-golang@golang-continuous-integration` skill for Dependabot/Renovate CI setup
 - → See `samber/cc-skills-golang@golang-security` skill for vulnerability scanning with govulncheck
-- → See `samber/cc-skills-golang@golang-popular-libraries` skill for vetted library recommendations
 
 ## Quick Reference
 

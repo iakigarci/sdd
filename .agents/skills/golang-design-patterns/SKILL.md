@@ -270,10 +270,8 @@ Core principles regardless of architecture:
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-data-structures` skill for data structure selection, internals, and container/ packages
 - → See `samber/cc-skills-golang@golang-error-handling` skill for error wrapping, sentinel errors, and the single handling rule
 - → See `samber/cc-skills-golang@golang-structs-interfaces` skill for interface design and composition
 - → See `samber/cc-skills-golang@golang-concurrency` skill for goroutine lifecycle and graceful shutdown
 - → See `samber/cc-skills-golang@golang-context` skill for timeout and cancellation patterns
 - → See `samber/cc-skills-golang@golang-project-layout` skill for architecture and directory structure
-- → See `samber/cc-skills-golang@golang-refactoring` skill for safely staging a migration toward one of these patterns (options struct, DI, consumer-side interfaces) across an existing codebase
