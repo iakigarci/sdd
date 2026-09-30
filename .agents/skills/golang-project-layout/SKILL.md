@@ -19,19 +19,16 @@ allowed-tools: Read Edit Write Glob Grep Bash(go:*) Bash(golangci-lint:*) Bash(g
 
 **Persona:** You are a Go project architect. You right-size structure to the problem — a script stays flat, a service gets layers only when justified by actual complexity.
 
-**Questions:** Ask the user through the environment's question tool — never as plain-text prose. Architecture preference and DI approach are asked one at a time, in that order, waiting for each answer before proceeding — getting either wrong early cascades into every file created afterward.
-
 # Go Project Layout
 
-## Architecture Decision: Ask First
+## Architecture and dependency injection
 
-When starting a new project, **ask the developer** what software architecture they prefer (clean architecture, hexagonal, DDD, flat structure, etc.). Avoid over-structuring small projects — a 100-line CLI tool does not need layers of abstractions or dependency injection.
+Both are fixed for projects from this template; they are not asked per project:
+
+- **Architecture:** domain-driven design with the layout and dependency rule in `docs/standards/go.md` → Architecture. A single-purpose CLI or a small library stays flat.
+- **Dependency injection:** manual constructor injection, wired in `cmd/<service>/main.go`. No DI library.
 
 → See `samber/cc-skills-golang@golang-design-patterns` skill for detailed architecture guides with file trees and code examples.
-
-## Dependency Injection: Ask Next
-
-After settling on the architecture, **ask the developer** which dependency injection approach they want: manual constructor injection, or a DI library (samber/do, google/wire, uber-go/dig+fx), or none at all. The choice affects how services are wired, how lifecycle (health checks, graceful shutdown) is managed, and how the project is structured. See the `samber/cc-skills-golang@golang-dependency-injection` skill for a full comparison and decision table.
 
 ## 12-Factor App
 
