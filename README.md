@@ -15,7 +15,7 @@ release-please opens its release PR with `GITHUB_TOKEN` by default, and GitHub d
 
 ## Git flow
 
-`main` accepts changes only by PR: linear history, green `check` and `commits` jobs, rebase merge only (`.github/rulesets/main.json`). Agents branch, commit, push, open the PR and get CI green; you review and merge on GitHub.
+`main` accepts changes only by PR: linear history, green `check` and `commits` jobs, rebase merge only (`.github/rulesets/main.json`). Rulesets need a public repo or GitHub Pro/Team; on a free private repo `main` stays unprotected and the flow rests on `AGENTS.md`. Agents branch, commit, push, open the PR and get CI green; you review and merge on GitHub.
 
 ## Token reduction
 
