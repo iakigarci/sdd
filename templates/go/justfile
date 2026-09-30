@@ -20,10 +20,11 @@ test:
 test-integration:
     go test -race -tags=integration ./...
 
+# Unit-test coverage across packages. Left out of the threshold: cmd/ (wiring
+# only), generated code, and infrastructure adapters, which `test-integration` covers.
 cover:
-    go test -race -shuffle=on -coverprofile=coverage.out ./...
-    # cmd/ only wires dependencies, so it is left out of the threshold.
-    grep -v '/cmd/' coverage.out > coverage.logic.out
+    go test -race -shuffle=on -coverpkg=./... -coverprofile=coverage.out ./...
+    grep -vE '/cmd/|/sqlcgen/|\.pb\.go:|/adapters/(postgres|nats|grpc)/|/platform/(postgres|nats)/' coverage.out > coverage.logic.out
     go tool cover -func=coverage.logic.out | awk -v min={{cover_min}} '/^total:/ { sub("%", "", $3); if ($3 + 0 < min) { printf "coverage %s%% is below %s%%\n", $3, min; exit 1 } printf "coverage %s%%\n", $3 }'
 
 # Known vulnerabilities in dependencies and the standard library.
