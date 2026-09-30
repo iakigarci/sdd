@@ -9,7 +9,7 @@ metadata:
     url: "https://github.com/humanlayer/skills/blob/main/plugins/show-me/skills/show-me/SKILL.md"
 ---
 
-The PR title is a Conventional Commit (`feat(billing): add invoice export`). PRs are rebase-merged, so the branch's commits land on `main` as they are; the title names the change as a whole.
+PRs are squash-merged: the title becomes the commit subject on `main` and the body its message. The title is a Conventional Commit (`feat(billing): add invoice export`, at most 72 characters), and the body describes the final change, not how review got there.
 
 Use this template for writing the PR body (`.github/pull_request_template.md` mirrors it):
 

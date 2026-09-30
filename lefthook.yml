@@ -1,9 +1,5 @@
 # Git hooks. Install once per clone: `lefthook install`.
-commit-msg:
-  commands:
-    conventional-commit:
-      run: scripts/check-commits.sh --file {1}
-
+# Branch commits are free-form: PRs are squash-merged and CI checks the PR title.
 pre-commit:
   commands:
     fmt-and-lint:

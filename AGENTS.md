@@ -32,15 +32,15 @@ Every gate runs through `just`, locally and in CI:
 
 ## Git and pull requests
 
-Every change reaches `main` through a GitHub PR that the user reviews and merges (rebase merge). Details in `docs/CODING_STANDARDS.md`.
+Every change reaches `main` through a GitHub PR that the user reviews and squash-merges: one PR becomes one commit, whose subject is the PR title and whose body is the PR description. Details in `docs/CODING_STANDARDS.md`.
 
 1. Branch from an up-to-date `main`: `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
-2. Commit with Conventional Commits; each commit lands on `main` as-is, so each one builds and passes.
-3. Push the branch and open the PR with `gh pr create`, body from the `pr` skill.
+2. Commit as often as useful; branch commits are squashed away.
+3. Push the branch and open the PR with `gh pr create`: a Conventional Commit title, body from the `pr` skill.
 4. Watch CI (`gh pr checks --watch`) and fix until green.
 5. Hand the user the PR URL. Merging is the user's step, on GitHub.
 
-Force-push only your own feature branch, with `--force-with-lease`.
+Address review feedback with new commits on the same branch; force-pushing is never needed.
 
 ## Workflow
 

@@ -4,25 +4,26 @@ Rules for every language in this repo. Language rules live in `docs/standards/`.
 
 ## Commits
 
-[Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>)!: <subject>`.
+Every commit on `main` is one squash-merged PR, and its message is the PR's title and description. Branch commits are free-form: they are squashed away.
+
+The PR title follows [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>)!: <subject>`.
 
 - Types: `feat`, `fix`, `perf`, `refactor`, `test`, `docs`, `build`, `ci`, `chore`, `revert`.
-- Subject: imperative, lower case, no trailing period, at most 72 characters.
+- Subject: imperative, lower case, no trailing period; the whole title at most 72 characters (CI checks it).
 - `!` or a `BREAKING CHANGE:` footer for anything that breaks a consumer. release-please derives versions and the changelog from these.
-- One logical change per commit.
+- One logical change per PR.
 
 ## Branches and pull requests
 
-- `main` is protected (`.github/rulesets/main.json`): changes arrive only by PR, with linear history, required `check` and `commits` jobs, and **rebase merge** as the only merge method.
+- `main` is protected (`.github/rulesets/main.json`): changes arrive only by PR, with linear history, required `check` and `pr-title` jobs, and **squash merge** as the only merge method (commit title = PR title, commit message = PR description).
 - Branch names: `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
-- Rebase merge puts every branch commit on `main` unchanged, so each commit is a Conventional Commit that builds and passes on its own. Before review, fold `fixup!` commits in with `GIT_SEQUENCE_EDITOR=: git rebase -i --autosquash main` (non-interactive) (CI rejects leftover fixups).
-- Keep the branch current by rebasing on `main`, never by merging `main` in.
-- The PR title is also a Conventional Commit; the body follows the `pr` skill (`.github/pull_request_template.md` mirrors it) and closes its issue with `Closes #<n>`.
+- One PR = one commit on `main`. Review feedback goes in as new commits on the branch; nothing is force-pushed. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.
+- The PR body follows the `pr` skill (`.github/pull_request_template.md` mirrors it), closes its issue with `Closes #<n>`, and becomes the commit message, so it describes the final change, not the review history.
 - Aim for a diff a reviewer can hold in their head (roughly under 400 changed lines, excluding generated files).
 
 ## CI/CD
 
-- CI (`.github/workflows/ci.yml`) runs `just check` with the toolchain pinned in `mise.toml`, so local and CI gates are identical. `commits.yml` checks every commit subject in the PR.
+- CI (`.github/workflows/ci.yml`) runs `just check` with the toolchain pinned in `mise.toml`, so local and CI gates are identical. `pr-title.yml` checks the PR title, which becomes the commit subject.
 - Releases: merging to `main` updates a release-please PR (version bump + changelog from commit types). Merging that PR tags the release and runs the publish job: container image to GHCR for services, GoReleaser binaries for CLIs, tag only for libraries.
 - Dependabot opens weekly grouped updates with Conventional Commit prefixes, including the SHA pins of GitHub Actions.
 
