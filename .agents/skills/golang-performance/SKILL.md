@@ -112,9 +112,6 @@ Automate benchmark comparison in CI to catch regressions before they reach produ
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-benchmark` skill for benchmarking methodology, `benchstat`, and `b.Loop()` (Go 1.24+)
-- → See `samber/cc-skills-golang@golang-troubleshooting` skill for pprof workflow, escape analysis diagnostics, and performance debugging
-- → See `samber/cc-skills-golang@golang-data-structures` skill for slice/map preallocation and `strings.Builder`
 - → See `samber/cc-skills-golang@golang-concurrency` skill for worker pools, `sync.Pool` API, goroutine lifecycle, and lock contention
 - → See `samber/cc-skills-golang@golang-safety` skill for defer in loops, slice backing array aliasing
 - → See `samber/cc-skills-golang@golang-database` skill for connection pool tuning and batch processing

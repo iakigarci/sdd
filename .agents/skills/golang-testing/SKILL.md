@@ -397,7 +397,6 @@ Many test best practices are enforced automatically by linters: `thelper`, `para
 
 ## Cross-References
 
-- → See `samber/cc-skills-golang@golang-stretchr-testify` skill for detailed testify API (assert, require, mock, suite)
 - → See `samber/cc-skills-golang@golang-database` skill (testing.md) for database integration test patterns
 - → See `samber/cc-skills-golang@golang-concurrency` skill for goroutine leak detection with goleak
 - → See `samber/cc-skills-golang@golang-continuous-integration` skill for CI test configuration and GitHub Actions workflows
