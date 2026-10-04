@@ -15,6 +15,7 @@ Local changes:
 - `setup-matt-pocock-skills`: writes the Agent skills block to `AGENTS.md` (`CLAUDE.md` only imports it).
 - `to-spec`, `to-tickets`: apply `ready-for-agent` only when `docs/agents/triage-labels.md` exists.
 - `code-review`: standards sources include `docs/standards/` and ADRs; findings carry severity and a Security line; sub-agent briefs ask for findings only instead of a word cap.
+- `code-review`: both axes run as named agents in `.claude/agents/` (Sonnet `standards-reviewer` carrying the brief and smell baseline; Opus `spec-reviewer`, read-only through `.claude/hooks/review-bash-guard.sh`, no project instructions, given only the fixed point and spec reference); `scripts/check-independence.sh` flags "Spec review not independent" from the `Co-Authored-By` trailers; generic sub-agents remain the fallback for agents without named agents.
 
 ## samber/cc-skills-golang (MIT, `LICENSE-samber`)
 

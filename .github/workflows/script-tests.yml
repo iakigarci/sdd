@@ -1,0 +1,21 @@
+name: Script tests
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # Generated projects run these inside `just check` (`script-tests` recipe);
+  # the template repo has no justfile, so it runs the scripts directly.
+  script-tests:
+    if: vars.IS_TEMPLATE == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: .claude/hooks/review-bash-guard_test.sh
+      - run: .agents/skills/code-review/scripts/check-independence_test.sh
+      - run: .agents/skills/code-review/scripts/reviewer-agents_test.sh

@@ -34,7 +34,7 @@ Three layers, all agent-agnostic:
 /to-spec           conversation → spec as a GitHub issue
 /to-tickets        spec → tracer-bullet issues with blocking edges
 /implement         criteria + ASSUMP-# → TDD → `just check` → evidence table → /code-review → commit
-/code-review       Standards axis (docs/CODING_STANDARDS.md, docs/standards/) + Spec axis, in parallel
+/code-review       Standards axis (Sonnet agent) + independent Spec axis (Opus agent, read-only), in parallel
 pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 ```
 
@@ -47,6 +47,7 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 | `docs/CODING_STANDARDS.md`, `docs/standards/` | How code is written; read by `/code-review`. |
 | `docs/agents/` | Issue tracker and domain-doc conventions for the skills. |
 | `.agents/skills/` | Skills in the open `SKILL.md` format. `.claude/skills` is a symlink to it. |
+| `.claude/agents/`, `.claude/hooks/` | Claude Code reviewer agents for `/code-review` (Opus `spec-reviewer`, Sonnet `standards-reviewer`) and the read-only Bash guard they share. |
 | `templates/go`, `templates/python` | `mise.toml`, justfile, lint config, CI, dependabot, Dockerfile, gitignore per language (plus `.goreleaser.yaml` for Go CLIs). |
 | `templates/release/` | Release workflow per shape: container (GHCR), goreleaser, tag-only. |
 | `scripts/check-pr-title.sh` | Conventional Commit check for PR titles (CI). |
