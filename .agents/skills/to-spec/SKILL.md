@@ -7,7 +7,7 @@ model: inherit
 
 This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user; just synthesize what you already know.
 
-The issue tracker should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
+The issue tracker should have been provided to you. If not, tell the user to write `docs/agents/issue-tracker.md` first.
 
 ## Process
 

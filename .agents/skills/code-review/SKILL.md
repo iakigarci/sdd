@@ -15,7 +15,7 @@ Both axes run as **named, parallel agents** so they don't pollute each other's c
 
 Both are read-only and have neither the Agent nor the Skill tool. Never invoke `/code-review` from inside this skill or its agents.
 
-The issue tracker should have been provided to you. If `docs/agents/issue-tracker.md` is missing, tell the user to run `/setup-matt-pocock-skills`.
+The issue tracker should have been provided to you. If `docs/agents/issue-tracker.md` is missing, tell the user to write it first.
 
 ## Process
 

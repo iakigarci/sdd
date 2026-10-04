@@ -10,7 +10,7 @@ Run under `/model opus` (see `docs/agents/models.md`); this skill spans several 
 
 Break a plan, spec, or conversation into a set of **tickets**: tracer-bullet vertical slices, each declaring the tickets that **block** it.
 
-The issue tracker should have been provided to you. If not, tell the user to run `/setup-matt-pocock-skills`.
+The issue tracker should have been provided to you. If not, tell the user to write `docs/agents/issue-tracker.md` first.
 
 ## Process
 
