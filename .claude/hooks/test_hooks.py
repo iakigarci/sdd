@@ -1,9 +1,6 @@
-"""Fixture tests for the Claude Code hooks in this directory.
+"""Tests for the Claude Code hooks in this directory, except the guard (test_guard.py).
 
 Run: python3 -m unittest discover -s .claude/hooks
-
-Each fixtures/guard/*.json holds a PreToolUse payload, the branch checked out
-in the repo the payload's cwd points to, and the expected decision.
 """
 
 import json
@@ -20,7 +17,6 @@ HOOKS = Path(__file__).resolve().parent
 GUARD = HOOKS / "guard.py"
 FORMAT = HOOKS / "format.py"
 STOP = HOOKS / "stop.py"
-FIXTURES = HOOKS / "fixtures" / "guard"
 
 
 def git_repo(path: Path, branch: str) -> None:
@@ -37,32 +33,6 @@ def run_hook(script: Path, payload: dict, env: dict | None = None) -> subprocess
         check=False,
         timeout=30,
     )
-
-
-class GuardFixtures(unittest.TestCase):
-    def test_fixtures(self) -> None:
-        fixtures = sorted(FIXTURES.glob("*.json"))
-        self.assertTrue(fixtures, "no guard fixtures found")
-        for fixture in fixtures:
-            case = json.loads(fixture.read_text())
-            with self.subTest(fixture=fixture.stem), tempfile.TemporaryDirectory() as tmp:
-                git_repo(Path(tmp), case["branch"])
-                payload = case["input"]
-                payload["cwd"] = tmp
-                result = run_hook(GUARD, payload)
-                self.assertEqual(result.returncode, 0, result.stderr)
-                if case["want"] == "allow":
-                    self.assertEqual(result.stdout, "", "allow must leave the call untouched")
-                    continue
-                out = json.loads(result.stdout)["hookSpecificOutput"]
-                self.assertEqual(out["hookEventName"], "PreToolUse")
-                self.assertEqual(out["permissionDecision"], "deny")
-                self.assertTrue(out["permissionDecisionReason"])
-
-    def test_non_bash_tool_passes(self) -> None:
-        payload = {"hook_event_name": "PreToolUse", "tool_name": "Read", "tool_input": {}}
-        result = run_hook(GUARD, payload)
-        self.assertEqual((result.returncode, result.stdout), (0, ""))
 
 
 class Settings(unittest.TestCase):
@@ -149,6 +119,12 @@ class Format(unittest.TestCase):
         (self.project / "justfile").write_text("")
         for rel in ("README.md", "go.mod", ".github/workflows/ci.yml"):
             self.assertEqual(self.edit(rel).returncode, 0)
+        self.assertEqual(self.calls(), [])
+
+    def test_markdown_edit_is_noop(self) -> None:
+        (self.project / "justfile").write_text("")
+        result = self.edit("docs/guide.md")
+        self.assertEqual((result.returncode, result.stdout), (0, ""))
         self.assertEqual(self.calls(), [])
 
     def test_file_outside_project_untouched(self) -> None:
@@ -269,6 +245,42 @@ class Stop(unittest.TestCase):
 
     def test_untracked_file_counts_as_change(self) -> None:
         (self.project / "new.go").write_text("package main\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), ["just fast"])
+
+    def test_docs_only_change_skips_gate(self) -> None:
+        (self.project / "docs").mkdir()
+        (self.project / "docs" / "guide.md").write_text("# Guide\n")
+        (self.project / "README.md").write_text("# Readme\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), [])
+
+    def test_root_markdown_read_by_the_gate_runs_it(self) -> None:
+        for runs, name in enumerate(("AGENTS.md", "CLAUDE.md"), start=1):
+            with self.subTest(file=name):
+                (self.project / name).write_text("@AGENTS.md\n")
+                self.assert_silent(self.stop())
+                self.assertEqual(self.calls(), ["just fast"] * runs)
+
+    def test_record_with_pruned_tree_runs_gate(self) -> None:
+        # The record names a tree git no longer has: the gate must run, not skip.
+        record = subprocess.run(
+            ["git", "rev-parse", "--git-path", "sdd-fast-gate"],
+            cwd=self.project,
+            capture_output=True,
+            text=True,
+            check=True,
+        ).stdout.strip()
+        (self.project / record).write_text("0" * 40 + "\n")
+        (self.project / "README.md").write_text("# Readme\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), ["just fast"])
+
+    def test_docs_then_code_runs_gate_on_the_whole_turn(self) -> None:
+        (self.project / "README.md").write_text("# Readme\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), [])
+        (self.project / "main.go").write_text("package main\n\nfunc main() {}\n")
         self.assert_silent(self.stop())
         self.assertEqual(self.calls(), ["just fast"])
 
