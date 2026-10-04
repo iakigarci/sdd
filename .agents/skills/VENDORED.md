@@ -6,13 +6,13 @@ Copied as editable files. Refresh by re-copying from upstream, then re-applying 
 
 Commit `d81f3a183412e71a5b1e84ca21bc1a35eea03a60` (2026-09-29).
 
-Local changes, one line per skill:
+Local changes by skill:
 
-- `implement`: ticket gate on `ready-for-agent`, `ASSUMP-#` beside test seams, pre-mortem drawing security failures from the Threat Model, `/security-review` pass with unfixed findings in Merge Danger, criteria → test evidence, pins no model and names `/model opus` escalation, ships as a PR via the `pr` fork.
-- `pr`: `Review findings` evidence line, squash-merge framing, the body opens with `Closes #` as its first line, then `Part of #`; runs as a fork with `model: haiku`.
+- `implement`: ticket gate on `ready-for-agent`; restates criteria; `ASSUMP-#` beside test seams (pause only at public API or persistence boundaries); pre-mortem drawing security failures from the Threat Model; `/security-review` pass (language security skill as fallback, manual for Python) with unfixed findings in Merge Danger; criteria → test evidence table; `just check` gate; review against `main`; pins no model and names `/model opus` escalation; ships as a squash-merged PR and passes the issue and evidence to the `pr` fork.
+- `pr`: `Review findings` evidence line (`scripts/pr-metrics.sh` reads it); squash-merge framing, Conventional Commit title, `Changes` bullets and evidence table; the body opens with `Closes #` as its first line, then `Part of #`; runs as a fork with `model: haiku`, takes inputs from `$ARGUMENTS` and returns text.
 - `to-spec`: never applies `ready-for-agent`; Threat Model section in the template; `model: inherit`.
 - `to-tickets`: never applies `ready-for-agent`; opens with "Run under `/model opus`".
-- `code-review`: standards sources include `docs/standards/` and ADRs; severity and Security line; both axes as named agents in `.claude/agents/`, checked by `scripts/check-independence.sh`.
+- `code-review`: standards sources include `docs/standards/` and ADRs; severity and Security line; findings-only sub-agent briefs (no word cap); both axes as named agents in `.claude/agents/` (Spec reviewer read-only via `review-bash-guard.sh`, no project instructions, given only the fixed point and spec reference), checked by `scripts/check-independence.sh`; generic sub-agents as fallback.
 - `handoff`: pins `model: sonnet`.
 - `grill-with-docs`, `diagnosing-bugs`, `improve-codebase-architecture`: open with "Run under `/model opus`".
 - `grilling`, `domain-modeling`, `tdd`, `codebase-design`, `writing-for-agents`: no local changes.
