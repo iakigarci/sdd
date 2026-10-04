@@ -25,7 +25,7 @@ The PR title is a [Conventional Commit](https://www.conventionalcommits.org/) su
 
 - CI (`.github/workflows/ci.yml`) runs `just check` with the toolchain pinned in `mise.toml`, so local and CI gates are identical. `pr-title.yml` checks the PR title, which becomes the commit subject; `branch-name.yml` checks the branch name.
 - Releases: merging to `main` updates a release-please PR (version bump + changelog from commit types). Merging that PR tags the release and runs the publish job: container image to GHCR for services, GoReleaser binaries for CLIs, tag only for libraries.
-- Dependabot opens weekly grouped updates with Conventional Commit prefixes, including the SHA pins of GitHub Actions.
+- Dependabot config per language lives in `templates/*/.github/dependabot.yml`.
 
 ## Agent instructions
 
