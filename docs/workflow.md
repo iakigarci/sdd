@@ -42,6 +42,10 @@ For a production regression.
 - Merge them one at a time. Every branch after the first merges `main` before its PR is ready.
 - No stacked PRs: no branch is based on another open PR's branch.
 
+## Metrics
+
+After each merge, `scripts/pr-metrics.sh <pr> --post` comments a metrics record on the closed issue: first-push CI, review findings raised and acted on, later reverts or hotfixes. Review minutes and tokens/cost are typed in on a terminal and left blank otherwise. Every 20 records, `scripts/pr-metrics.sh --summary` proposes steps to cut.
+
 ## Specs
 
 `SPEC.md` is the project constitution. It changes only through an approved `/grill-with-docs` outcome. Parent issue = feature spec; child issues = tickets.

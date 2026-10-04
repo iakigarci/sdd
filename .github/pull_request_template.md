@@ -18,6 +18,8 @@ Part of #<parent>
 **Before:** <failing test / output>
 **After:** <passing test / output>
 
+Review findings: <raised> raised, <acted on> acted on
+
 ## Merge Danger
 
 **Door:** <one-way or two-way>

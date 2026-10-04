@@ -23,6 +23,7 @@ jobs:
       - run: scripts/check-branch-name_test.sh
       - run: scripts/enforced-rules_test.sh
       - run: scripts/epic-children_test.sh
+      - run: scripts/pr-metrics_test.sh
       - run: .agents/skills/implement/scripts/security-pass_test.sh
       - run: .agents/skills/implement/scripts/model-assignment_test.sh
       - run: .agents/skills/implement/scripts/workflow-tracks_test.sh
