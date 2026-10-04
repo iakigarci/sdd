@@ -51,6 +51,7 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 | `templates/release/` | Release workflow per shape: container (GHCR), goreleaser, tag-only. |
 | `scripts/check-pr-title.sh` | Conventional Commit check for PR titles (CI). |
 | `scripts/check-agents-md.sh` | Keeps `AGENTS.md` (with its `@` imports) at 150 lines or fewer; part of `just check`. |
+| `.claude/settings.json`, `.claude/hooks/` | Claude Code hooks: deny force-push, push to `main` and PR merges; format the edited Go/Python file. Guard rails; the `main` ruleset is the real block. Tests run in `hooks.yml`. |
 | `scripts/check-claude-md.sh` | Fails when `CLAUDE.md` exists without an `@AGENTS.md` import; part of `just check`. |
 | `lefthook.yml` | pre-commit fmt/lint, pre-push `just check`. |
 | `.github/` | PR template, PR-title check, security workflow (dependency review, CodeQL, weekly scans), `main` rulesets for projects (`main.json`) and this template (`template.json`). |
