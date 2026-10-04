@@ -1,6 +1,9 @@
 ---
 name: pr
 description: "Use when writing a PR body."
+context: fork
+agent: general-purpose
+model: haiku
 metadata:
   credits:
     skill: show-me
@@ -10,6 +13,10 @@ metadata:
 ---
 
 PRs are squash-merged: the title becomes the commit subject on `main` and the body its message. The title is a Conventional Commit (`feat(billing): add invoice export`, at most 72 characters), and the body describes the final change, not how review got there.
+
+This skill runs as a forked Haiku agent (`docs/agents/models.md`) that sees none of the calling conversation. Its inputs are the arguments: $ARGUMENTS
+
+They name the issue and carry the evidence table; read the rest from `gh issue view`, `git log main..HEAD` and `git diff --stat main...HEAD`. Return the PR title and body as text, ready for `gh pr create`; do not create, edit or comment on the PR yourself.
 
 Use this template for writing the PR body (`.github/pull_request_template.md` mirrors it):
 

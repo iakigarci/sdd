@@ -2,6 +2,7 @@
 name: to-spec
 description: "Turn the current conversation into a spec and publish it to the project issue tracker: no interview, just synthesis of what you've already discussed."
 disable-model-invocation: true
+model: inherit
 ---
 
 This skill takes the current conversation context and codebase understanding and produces a spec. Do NOT interview the user; just synthesize what you already know.
@@ -56,6 +57,14 @@ Do NOT include specific file paths or code snippets. They may end up being outda
 
 Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
 
+## Threat Model
+
+A short security pass over the feature, one line per item.
+
+- **Trust boundaries**: where data or control crosses into more-trusted code (user input, network, other services, files, environment).
+- **Assets**: what an attacker wants (credentials, personal data, money, availability).
+- **STRIDE**: one line each for Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege: the threat and its mitigation, or `n/a`.
+
 ## Testing Decisions
 
 A list of testing decisions that were made. Include:
@@ -73,3 +82,5 @@ A description of the things that are out of scope for this spec.
 Any further notes about the feature.
 
 </spec-template>
+
+This skill pins its model in frontmatter; see `docs/agents/models.md`.

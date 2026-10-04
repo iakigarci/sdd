@@ -22,3 +22,5 @@ jobs:
       - run: .agents/skills/pr/scripts/pr-template_test.sh
       - run: scripts/check-branch-name_test.sh
       - run: scripts/enforced-rules_test.sh
+      - run: .agents/skills/implement/scripts/security-pass_test.sh
+      - run: .agents/skills/implement/scripts/model-assignment_test.sh
