@@ -1,6 +1,6 @@
 ---
 name: close-epic
-description: "Finish an epic (a parent issue with child issues): an independent spec review over the combined diff of its children, permanent decisions written back, and the parent closed with a summary. Refuses while any child issue is still open."
+description: "Finish an epic (a parent issue with child issues): independent spec review of the combined diff of its children, permanent decisions written back, parent closed with a summary. Refuses while any child is open."
 disable-model-invocation: true
 ---
 

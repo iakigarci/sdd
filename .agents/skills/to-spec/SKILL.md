@@ -1,6 +1,6 @@
 ---
 name: to-spec
-description: "Turn the current conversation into a spec and publish it to the project issue tracker: no interview, just synthesis of what you've already discussed."
+description: "Turn the current conversation into a spec published to the project issue tracker, with no interview: just a synthesis of what was discussed."
 disable-model-invocation: true
 model: inherit
 ---

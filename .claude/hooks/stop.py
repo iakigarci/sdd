@@ -5,7 +5,9 @@ The working tree (tracked and untracked files, .gitignore respected) is
 fingerprinted as a git tree hash. The gate runs only when that hash differs from
 the last passing run, recorded in the git directory, outside the working tree.
 With no record yet, the baseline is HEAD's tree, so a turn that changed nothing
-costs one `git add` into a scratch index and nothing more.
+costs one `git add` into a scratch index and nothing more. A change made only to
+Markdown files (except the root AGENTS.md and CLAUDE.md, which the gate reads)
+is docs-only: the gate is skipped and the record is left alone.
 
 On failure the stop is blocked with the tail of the output as the reason; on
 success the hash is recorded. When `stop_hook_active` is set the agent is
@@ -26,6 +28,7 @@ from pathlib import Path
 RECORD = "sdd-fast-gate"
 GATE_TIMEOUT = 540  # below the hook timeout in settings.json, so a slow gate fails open
 MAX_REASON = 8000  # characters of output kept; the tail holds the failures
+GATE_READS = {"AGENTS.md", "CLAUDE.md"}  # Markdown that `just fast` checks, so not docs-only
 
 
 class GitError(Exception):
@@ -72,6 +75,21 @@ def baseline(project: Path, record: Path) -> str | None:
         return None  # no commits yet
 
 
+def code_changed(project: Path, base: str | None, current: str) -> bool:
+    """True when some path between the two trees is not a docs-only Markdown file.
+
+    An unreadable baseline (a record whose tree git has pruned) counts as code, so
+    the gate runs and writes a fresh record instead of skipping forever.
+    """
+    if base is None:
+        return True
+    try:
+        paths = git(project, "diff-tree", "-r", "--name-only", base, current).splitlines()
+    except GitError:
+        return True
+    return any(not (path.endswith(".md") and path not in GATE_READS) for path in paths)
+
+
 def run_gate(project: Path) -> subprocess.CompletedProcess | None:
     try:
         return subprocess.run(
@@ -101,7 +119,8 @@ def main() -> None:
     try:
         record = project / git(project, "rev-parse", "--git-path", RECORD)
         current = tree_hash(project)
-        if current == baseline(project, record):
+        base = baseline(project, record)
+        if current == base or not code_changed(project, base, current):
             return
     except (GitError, OSError):
         return

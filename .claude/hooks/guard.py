@@ -5,7 +5,7 @@ Reads the hook payload on stdin. A blocked call gets a deny decision with the
 reason on stdout; every other call passes untouched (no output, exit 0).
 
 A guard rail, not a security boundary: the `main` ruleset is the real block.
-Tests: test_hooks.py, fixtures in fixtures/guard/.
+Tests: test_guard.py.
 """
 
 import json
@@ -42,6 +42,10 @@ REST_MERGE = re.compile(r"/pulls/[^/\s]+/merge\b|/merges\b")
 GRAPHQL_MERGE = re.compile(r"\bmergePullRequest\b|\benablePullRequestAutoMerge\b")
 # `gh api` sends a POST when it has fields or input and no explicit method.
 API_BODY_OPTS = ("-f", "-F", "--field", "--raw-field", "--input")
+# Every deny is reached through a git or gh command, so a command with neither word
+# is passed on without parsing. Quotes and backslashes go first: `g"i"t` is git.
+GIT_OR_GH = re.compile(r"git|gh")
+QUOTING = re.compile(r"[\"'\\]")
 
 
 def main() -> int:
@@ -66,6 +70,8 @@ def main() -> int:
 
 def check(command: str, cwd: str) -> str | None:
     """Return the deny reason for the first blocked simple command, or None."""
+    if not GIT_OR_GH.search(QUOTING.sub("", command)):
+        return None
     for words in simple_commands(command):
         reason = check_words(strip_wrappers(words), cwd)
         if reason:
