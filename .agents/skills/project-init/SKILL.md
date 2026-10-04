@@ -53,7 +53,7 @@ Work on a `chore/project-init` branch.
    - Python: `uv init --package <name>`, merge `pyproject.tools.toml` into `pyproject.toml` and delete it, `uv add --dev ruff ty pytest pytest-cov`, tests under `tests/`.
 8. Replace `README.md` with a project README: pitch, prerequisites (`mise install`, `lefthook install`), the `just` commands, links to `SPEC.md` and `AGENTS.md`, and the `RELEASE_PLEASE_TOKEN` note from the template README.
 9. Delete `.agents/skills/project-init/`: it is single-use.
-10. Keep `.claude/` and `.github/workflows/hooks.yml` as they are: the guard hook is already active, and the format hook starts working once the justfile exists.
+10. Keep `.claude/` and `.github/workflows/hooks.yml` as they are: the guard hook is already active, and the format and Stop (`just fast`) hooks start working once the justfile exists.
 
 ## 4. Configure GitHub
 

@@ -4,6 +4,9 @@ cover_min := "80"
 
 default: check
 
+# Fast subset of `check`, run by the Claude Code Stop hook when code changed.
+fast: fmt-check lint test
+
 fmt:
     golangci-lint fmt
 

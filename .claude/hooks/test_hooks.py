@@ -8,6 +8,7 @@ in the repo the payload's cwd points to, and the expected decision.
 
 import json
 import os
+import shutil
 import stat
 import subprocess
 import sys
@@ -18,6 +19,7 @@ from pathlib import Path
 HOOKS = Path(__file__).resolve().parent
 GUARD = HOOKS / "guard.py"
 FORMAT = HOOKS / "format.py"
+STOP = HOOKS / "stop.py"
 FIXTURES = HOOKS / "fixtures" / "guard"
 
 
@@ -64,18 +66,30 @@ class GuardFixtures(unittest.TestCase):
 
 
 class Settings(unittest.TestCase):
-    def test_settings_wire_both_hooks_and_deny_merge(self) -> None:
+    def test_settings_wire_hooks_and_deny_merge(self) -> None:
         settings = json.loads((HOOKS.parent / "settings.json").read_text())
         commands = {
-            (event, entry["matcher"]): hook["command"]
+            (event, entry.get("matcher", "")): hook["command"]
             for event, entries in settings["hooks"].items()
             for entry in entries
             for hook in entry["hooks"]
         }
         self.assertIn("guard.py", commands[("PreToolUse", "Bash")])
         self.assertIn("format.py", commands[("PostToolUse", "Edit|MultiEdit|Write")])
+        self.assertIn("stop.py", commands[("Stop", "")])
         for rule in ("Bash(gh pr merge)", "Bash(gh pr merge *)"):
             self.assertIn(rule, settings["permissions"]["deny"])
+
+    def test_justfiles_have_fast_recipe(self) -> None:
+        # Template repo: templates/*/justfile; generated project: ./justfile.
+        repo = HOOKS.parent.parent
+        justfiles = [
+            p for p in (repo / "justfile", *repo.glob("templates/*/justfile")) if p.is_file()
+        ]
+        self.assertTrue(justfiles, "no justfile found")
+        for justfile in justfiles:
+            with self.subTest(justfile=str(justfile.relative_to(repo))):
+                self.assertIn("fast: fmt-check lint test", justfile.read_text().splitlines())
 
 
 class Format(unittest.TestCase):
@@ -174,6 +188,123 @@ class Format(unittest.TestCase):
             timeout=30,
         )
         self.assertEqual(result.returncode, 0)
+
+
+class Stop(unittest.TestCase):
+    """A real git repo and a fake `just` on PATH that logs each call and exits with a set code."""
+
+    def setUp(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        self.root = Path(tmp.name).resolve()
+        self.project = self.root / "project"
+        git_repo(self.project, "feat/x")
+        (self.project / "justfile").write_text("fast:\n")
+        (self.project / "main.go").write_text("package main\n")
+        self.git("add", "-A")
+        self.git("-c", "user.name=t", "-c", "user.email=t@t", "commit", "-qm", "init")
+        self.bin = self.root / "bin"
+        self.bin.mkdir()
+        self.log = self.root / "calls.log"
+        self.just(0)
+        self.env = {
+            **os.environ,
+            "PATH": f"{self.bin}{os.pathsep}{os.environ['PATH']}",
+            "CLAUDE_PROJECT_DIR": str(self.project),
+        }
+
+    def git(self, *args: str) -> None:
+        subprocess.run(["git", *args], cwd=self.project, check=True, capture_output=True)
+
+    def just(self, code: int, output: str = "") -> None:
+        tool = self.bin / "just"
+        tool.write_text(
+            f'#!/bin/sh\necho "just $*" >> "{self.log}"\nprintf %s "{output}"\nexit {code}\n'
+        )
+        tool.chmod(tool.stat().st_mode | stat.S_IEXEC)
+
+    def stop(self, active: bool = False) -> subprocess.CompletedProcess:
+        payload = {"hook_event_name": "Stop", "cwd": str(self.project), "stop_hook_active": active}
+        return run_hook(STOP, payload, self.env)
+
+    def calls(self) -> list[str]:
+        return self.log.read_text().splitlines() if self.log.exists() else []
+
+    def assert_silent(self, result: subprocess.CompletedProcess) -> None:
+        self.assertEqual((result.returncode, result.stdout), (0, ""), result.stderr)
+
+    def test_no_change_skips_gate(self) -> None:
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), [])
+
+    def test_change_and_pass_records_state(self) -> None:
+        (self.project / "main.go").write_text("package main\n\nfunc main() {}\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), ["just fast"])
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), ["just fast"], "unchanged tree after a pass must not rerun")
+        (self.project / "main.go").write_text("package main\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(len(self.calls()), 2, "a later change runs the gate again")
+
+    def test_pass_is_recorded_outside_the_tree(self) -> None:
+        (self.project / "main.go").write_text("changed\n")
+        self.assert_silent(self.stop())
+        status = subprocess.run(
+            ["git", "status", "--porcelain"],
+            cwd=self.project,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        self.assertEqual(status.stdout.splitlines(), [" M main.go"])
+
+    def test_untracked_file_counts_as_change(self) -> None:
+        (self.project / "new.go").write_text("package main\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), ["just fast"])
+
+    def test_change_and_fail_blocks_with_output(self) -> None:
+        self.just(1, "main.go:1: undefined: foo")
+        (self.project / "main.go").write_text("broken\n")
+        result = self.stop()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        out = json.loads(result.stdout)
+        self.assertEqual(out["decision"], "block")
+        self.assertIn("main.go:1: undefined: foo", out["reason"])
+        self.stop()
+        self.assertEqual(len(self.calls()), 2, "a failure is not recorded, so the next stop reruns")
+
+    def test_long_output_keeps_the_tail(self) -> None:
+        self.just(1, "x" * 20000 + "LAST-LINE")
+        (self.project / "main.go").write_text("broken\n")
+        reason = json.loads(self.stop().stdout)["reason"]
+        self.assertTrue(reason.endswith("LAST-LINE"))
+        self.assertLess(len(reason), 9000)
+
+    def test_stop_hook_active_never_blocks_again(self) -> None:
+        self.just(1, "still broken")
+        (self.project / "main.go").write_text("broken\n")
+        self.assert_silent(self.stop(active=True))
+        self.assertEqual(self.calls(), [])
+
+    def test_template_repo_is_noop(self) -> None:
+        (self.project / "justfile").unlink()
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), [])
+
+    def test_missing_just_never_blocks(self) -> None:
+        (self.project / "main.go").write_text("changed\n")
+        (self.bin / "just").unlink()
+        env = {**self.env, "PATH": f"{self.bin}{os.pathsep}{Path(shutil.which('git')).parent}"}
+        payload = {"hook_event_name": "Stop", "cwd": str(self.project), "stop_hook_active": False}
+        self.assert_silent(run_hook(STOP, payload, env))
+
+    def test_not_a_git_repo_never_blocks(self) -> None:
+        shutil.rmtree(self.project / ".git")
+        (self.project / "main.go").write_text("changed\n")
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), [])
 
 
 if __name__ == "__main__":
