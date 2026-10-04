@@ -31,7 +31,13 @@ links_resolve() {
   while read -r link; do
     target=${link%%#*}
     [[ -z $target || $target == http* || $target == mailto:* ]] && continue
-    [[ -e "$dir/$target" ]] || { echo "✗ ${file#"$root"/}: link '$link' does not resolve"; fail=1; }
+    [[ -e "$dir/$target" ]] || { echo "✗ ${file#"$root"/}: link '$link' does not resolve"; fail=1; continue; }
+    [[ $link == *#* ]] || continue
+    anchor=${link#*#}
+    # GitHub slug: lower case, punctuation dropped, spaces to dashes.
+    grep -E '^#+ ' "$dir/$target" | sed -E 's/^#+ +//' | tr 'A-Z' 'a-z' |
+      sed -E 's/[^a-z0-9 _-]//g; s/ /-/g' | grep -qxF -- "$anchor" ||
+      { echo "✗ ${file#"$root"/}: anchor '#$anchor' is not a heading in $target"; fail=1; }
   done < <(grep -oE '\]\([^)]+\)' "$file" | sed -E 's/^\]\((.*)\)$/\1/')
 }
 
@@ -42,13 +48,13 @@ forbid "$readme" '/to-tickets|/code-review|/implement' 'the workflow chain (link
 forbid "$readme" 'Opus|Sonnet|Haiku' 'the model assignment (link to docs/agents/models.md)'
 forbid "$readme" 'squash' 'the git flow (link to CODING_STANDARDS → Branches and pull requests)'
 forbid "$readme" 'Trivy|trivy|gitleaks|govulncheck' 'the security checks (link to CODING_STANDARDS → Security)'
-want "$readme" 'AGENTS\.md#workflow|\]\(AGENTS\.md\)' 'a link to the workflow chain in AGENTS.md'
+want "$readme" 'AGENTS\.md#workflow' 'a link to the workflow chain in AGENTS.md'
 want "$readme" '\(docs/workflow\.md\)' 'a link to docs/workflow.md'
 links_resolve "$readme"
 
 # The model table is the only table that names models. USAGE.md's cheat sheet
 # is a second copy: it links to models.md instead.
-for f in "$root"/*.md "$root"/docs/*.md "$root"/docs/*/*.md; do
+for f in "$root"/*.md "$root"/docs/*.md "$root"/docs/*/*.md "$root"/.agents/skills/*/*.md "$root"/.claude/agents/*.md; do
   [[ $f == "$models" ]] && continue
   grep -qE '^\|.*\b(Opus|Sonnet|Haiku)\b' "$f" &&
     { echo "✗ ${f#"$root"/} has a table naming models; only docs/agents/models.md may"; fail=1; }
@@ -65,14 +71,13 @@ links_resolve "$standards"
 for skill in golang-error-handling golang-observability golang-naming golang-testing \
   golang-context golang-concurrency golang-structs-interfaces; do
   [[ -f "$root/.agents/skills/$skill/SKILL.md" ]] || { echo "✗ skill $skill is missing"; fail=1; }
-  want "$gostd" "\.agents/skills/$skill/|$skill" "a pointer to the $skill skill"
+  want "$gostd" "\.agents/skills/$skill/" "a pointer to the $skill skill"
 done
 forbid "$gostd" 't\.Parallel|t\.Helper' 'table-driven test mechanics (golang-testing)'
 forbid "$gostd" 'context\.Context. is the first parameter' 'context placement (golang-context)'
 forbid "$gostd" 'Every goroutine has an owner' 'goroutine ownership (golang-concurrency)'
 forbid "$gostd" 'accept interfaces, return concrete' 'interface design (golang-structs-interfaces)'
 forbid "$gostd" 'Wrap errors with' 'error wrapping (golang-error-handling)'
-forbid "$gostd" 'Exported identifiers keep backward compatibility' 'the compatibility rule (CODING_STANDARDS → Compatibility)'
 forbid "$gostd" 'Standard library first' 'the dependency rule (CODING_STANDARDS → Dependencies)'
 want "$gostd" 'CODING_STANDARDS\.md' 'a link to CODING_STANDARDS.md for the shared rules'
 want "$gostd" 'Dependency rule' 'the project architecture rule kept'

@@ -1,6 +1,6 @@
 # Go standards
 
-Go-specific rules on top of `docs/CODING_STANDARDS.md`. The `golang-*` skills in `.agents/skills/` carry the detail; this file holds the choices they leave open, and it wins where they disagree. General Go rules for errors, logging, naming, testing, context, concurrency and interfaces are in `golang-error-handling`, `golang-observability`, `golang-naming`, `golang-testing`, `golang-context`, `golang-concurrency` and `golang-structs-interfaces`; this file does not repeat them.
+Go-specific rules on top of `docs/CODING_STANDARDS.md`. The `golang-*` skills in `.agents/skills/` carry the detail; this file holds the choices they leave open, and it wins where they disagree. General Go rules for errors, logging, naming, testing, context, concurrency and interfaces are in the skills [`golang-error-handling`](../../.agents/skills/golang-error-handling/SKILL.md), [`golang-observability`](../../.agents/skills/golang-observability/SKILL.md), [`golang-naming`](../../.agents/skills/golang-naming/SKILL.md), [`golang-testing`](../../.agents/skills/golang-testing/SKILL.md), [`golang-context`](../../.agents/skills/golang-context/SKILL.md), [`golang-concurrency`](../../.agents/skills/golang-concurrency/SKILL.md) and [`golang-structs-interfaces`](../../.agents/skills/golang-structs-interfaces/SKILL.md); this file does not repeat them.
 
 ## Toolchain
 
@@ -73,6 +73,7 @@ db/queries/                    sqlc query files
 ## Code
 
 - Domain errors are typed so adapters can map them to HTTP statuses and gRPC codes (`golang-error-handling` covers wrapping).
+- Sentinel errors are named `ErrX`. Exported identifiers keep backward compatibility ([rule](../CODING_STANDARDS.md#compatibility)).
 - Logging is `log/slog`, injected rather than global (`golang-observability`).
 - Dependencies are injected by hand: constructors take what they need, and `cmd/<service>/main.go` wires them. No DI library or container.
 - Configuration is one typed struct, loaded from the environment and validated at startup in `internal/platform` ([rule](../CODING_STANDARDS.md#configuration-and-secrets)).
