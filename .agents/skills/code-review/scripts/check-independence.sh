@@ -11,8 +11,10 @@ fixed=$1 reviewer=$2
 git rev-parse --verify --quiet "$fixed^{commit}" >/dev/null || { echo "unknown ref: $fixed" >&2; exit 2; }
 
 # Trailer key matching is case-insensitive, so GitHub's Co-authored-by counts.
+# Only agent trailers name a model; human co-authors are dropped.
 models=$(git log "$fixed..HEAD" --format='%(trailers:key=Co-Authored-By,valueonly)' |
-  sed -e 's/[[:space:]]*<[^>]*>[[:space:]]*$//' -e '/^[[:space:]]*$/d' | sort -u)
+  grep -iE 'claude|opus|sonnet|haiku|fable|gpt|codex|gemini|noreply@anthropic\.com' |
+  sed -e 's/[[:space:]]*<[^>]*>[[:space:]]*$//' | sort -u || true)
 
 if [[ -z $models ]]; then
   echo "Implementer model unknown: no Co-Authored-By trailer on $fixed..HEAD, so Spec review independence is unverified."

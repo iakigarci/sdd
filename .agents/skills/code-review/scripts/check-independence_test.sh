@@ -45,6 +45,12 @@ expect "different model" "Spec review independent" \
 
 expect "no trailer" "Implementer model unknown" "$(repo 'feat: x')"
 
+expect "human co-author only" "Implementer model unknown" \
+  "$(repo $'feat: x\n\nCo-Authored-By: Jane Doe <jane@example.com>')"
+
+expect "human co-author beside a model" "Spec review independent: implementer Claude Sonnet 5, spec reviewer opus." \
+  "$(repo $'feat: x\n\nCo-Authored-By: Jane Doe <jane@example.com>\nCo-Authored-By: Claude Sonnet 5 <noreply@anthropic.com>')"
+
 dir=$(repo 'feat: x')
 (cd "$dir" && "$script" no-such-ref opus >/dev/null 2>&1)
 [[ $? == 2 ]] || { echo "✗ bad ref did not exit 2"; fail=1; }

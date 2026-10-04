@@ -29,6 +29,12 @@ vuln:
 agents-md:
     scripts/check-agents-md.sh 150
 
+# Fixture tests for the reviewer agents' Bash guard and independence check.
+script-tests:
+    .claude/hooks/review-bash-guard_test.sh
+    .agents/skills/code-review/scripts/check-independence_test.sh
+    .agents/skills/code-review/scripts/reviewer-agents_test.sh
+
 # Secrets committed anywhere in git history.
 secrets:
     gitleaks git --no-banner --redact
@@ -40,4 +46,4 @@ workflows:
 tidy-check:
     uv lock --check
 
-check: agents-md fmt-check lint cover vuln secrets workflows tidy-check
+check: agents-md script-tests fmt-check lint cover vuln secrets workflows tidy-check

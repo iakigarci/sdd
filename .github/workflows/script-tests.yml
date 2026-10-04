@@ -7,9 +7,10 @@ permissions:
   contents: read
 
 jobs:
-  # Fixture tests for the reviewer Bash guard and the code-review
-  # independence check. Generated projects keep both files and this job.
+  # Generated projects run these inside `just check` (`script-tests` recipe);
+  # the template repo has no justfile, so it runs the scripts directly.
   script-tests:
+    if: vars.IS_TEMPLATE == 'true'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -17,3 +18,4 @@ jobs:
           persist-credentials: false
       - run: .claude/hooks/review-bash-guard_test.sh
       - run: .agents/skills/code-review/scripts/check-independence_test.sh
+      - run: .agents/skills/code-review/scripts/reviewer-agents_test.sh

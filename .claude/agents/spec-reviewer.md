@@ -22,7 +22,7 @@ Your task message names a **fixed point** (a branch, tag or commit) and a **spec
 Bash is limited to `git diff|log|show|rev-parse` and `gh issue view`, one command per call, no pipes or redirection.
 
 1. `git rev-parse <fixed-point>` to confirm the ref resolves.
-2. The spec: `gh issue view <n> --comments`, or Read the file. If the issue names a parent issue, fetch that too for context; the child issue's acceptance criteria are what you check.
+2. The spec: `gh issue view <n>` for the body, then `gh issue view <n> --comments` for any discussion (off a terminal, `--comments` prints only the comments), or Read the file. If the issue names a parent issue, fetch that too for context; the child issue's acceptance criteria are what you check.
 3. The change: `git log <fixed-point>..HEAD --oneline`, then `git diff <fixed-point>...HEAD` (three dots: against the merge-base). Use `git diff --stat` first on large diffs, and Read, Grep and Glob to see surrounding code and tests.
 
 ## What to report
