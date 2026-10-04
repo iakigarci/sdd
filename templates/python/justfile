@@ -42,6 +42,7 @@ script-tests:
     .agents/skills/code-review/scripts/check-independence_test.sh
     .agents/skills/code-review/scripts/reviewer-agents_test.sh
     .agents/skills/pr/scripts/pr-template_test.sh
+    .agents/skills/implement/scripts/security-pass_test.sh
 
 # Secrets committed anywhere in git history.
 secrets:
