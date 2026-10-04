@@ -27,13 +27,11 @@ has() {
   done
 }
 
+# The review is conditional on the diff, and unfixed findings reach the PR.
 review=$(step 6)
 has "implement Review step" "$review" \
   '/security-review' '\bauth' 'input parsing' 'serialization' 'SQL' '\bexec\b' \
-  'secrets' 'file paths' 'network' 'golang-security' 'Merge Danger'
-
-# The review is conditional on the diff, and unfixed findings reach the PR.
-has "implement Review step" "$review" \
+  'secrets' 'file paths' 'network' 'golang-security' \
   'When the diff touches auth[^.;]*also run `/security-review`' \
   'agents without that command run the language security skill' \
   'for Python[^;]*manual pass' \
