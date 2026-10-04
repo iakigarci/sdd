@@ -6,7 +6,7 @@ default: check
 fast: agents-md claude-md script-tests
 
 # Template-level gates. Generated projects get their own justfile from templates/<language>/.
-check: agents-md claude-md script-tests secrets workflows
+check: fast secrets workflows
 
 # AGENTS.md stays small: it is loaded on every agent turn.
 agents-md:
