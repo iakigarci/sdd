@@ -19,7 +19,7 @@ MAIN = "main"
 
 FORCE = (
     "Force-pushing is blocked: published history is the user's to rewrite. "
-    "Push new commits instead (AGENTS.md → Git and pull requests)."
+    "Push new commits instead (docs/CODING_STANDARDS.md → Branches and pull requests)."
 )
 TO_MAIN = (
     "Pushing to main is blocked: changes reach main only through a squash-merged PR. "

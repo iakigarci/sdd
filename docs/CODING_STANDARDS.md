@@ -6,25 +6,24 @@ Rules for every language in this repo. Language rules live in `docs/standards/`.
 
 Every commit on `main` is one squash-merged PR, and its message is the PR's title and description. Branch commits are free-form: they are squashed away.
 
-The PR title follows [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>)!: <subject>`.
+The PR title is a [Conventional Commit](https://www.conventionalcommits.org/) subject; `scripts/check-pr-title.sh` (CI job `pr-title`) holds the allowed types and length.
 
-- Types: `feat`, `fix`, `perf`, `refactor`, `test`, `docs`, `build`, `ci`, `chore`, `revert`.
-- Subject: imperative, lower case, no trailing period; the whole title at most 72 characters (CI checks it).
+- Subject: imperative, lower case, no trailing period.
 - `!` or a `BREAKING CHANGE:` footer for anything that breaks a consumer. release-please derives versions and the changelog from these.
 - One logical change per PR.
 
 ## Branches and pull requests
 
-- Claude Code hooks (`.claude/settings.json`) deny force-pushes, pushes to `main` and PR merges, so an agent cannot skip these rules; they are guard rails, and on a free private repo without a ruleset the only ones.
-- `main` is protected (`.github/rulesets/main.json`): changes arrive only by PR, with linear history, required `check` and `pr-title` jobs, and **squash merge** as the only merge method (commit title = PR title, commit message = PR description).
-- Branch names: `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
-- One PR = one commit on `main`. Review feedback goes in as new commits on the branch; nothing is force-pushed. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.
+- Claude Code hooks (`.claude/settings.json`) deny force-pushes, pushes to `main` and PR merges. They are guard rails; on a free private repo without a ruleset they are the only ones.
+- `.github/rulesets/main.json` protects `main`: PR only, squash merge only, linear history, and the CI jobs it lists must pass.
+- Branch names are `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`; `scripts/check-branch-name.sh` (CI job `branch-name`) checks them and lists the exempt bot branches.
+- One PR = one commit on `main`. Review feedback goes in as new commits on the branch. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.
 - The PR body follows the `pr` skill (`.github/pull_request_template.md` mirrors it), opens with `Closes #<n>` on its first line (then `Part of #<parent>` when the issue belongs to a larger feature, which links the parent without closing it), and becomes the commit message, so it describes the final change, not the review history.
 - Aim for a diff a reviewer can hold in their head (roughly under 400 changed lines, excluding generated files).
 
 ## CI/CD
 
-- CI (`.github/workflows/ci.yml`) runs `just check` with the toolchain pinned in `mise.toml`, so local and CI gates are identical. `pr-title.yml` checks the PR title, which becomes the commit subject.
+- CI (`.github/workflows/ci.yml`) runs `just check` with the toolchain pinned in `mise.toml`, so local and CI gates are identical. `pr-title.yml` checks the PR title, which becomes the commit subject; `branch-name.yml` checks the branch name.
 - Releases: merging to `main` updates a release-please PR (version bump + changelog from commit types). Merging that PR tags the release and runs the publish job: container image to GHCR for services, GoReleaser binaries for CLIs, tag only for libraries.
 - Dependabot opens weekly grouped updates with Conventional Commit prefixes, including the SHA pins of GitHub Actions.
 

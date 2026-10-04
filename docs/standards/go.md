@@ -79,7 +79,7 @@ db/queries/                    sqlc query files
 - `log/slog` for logging, injected rather than global.
 - Dependencies are injected by hand: constructors take what they need, and `cmd/<service>/main.go` wires them. No DI library or container.
 - Configuration from environment variables into one typed struct, validated at startup in `internal/platform`.
-- Exported identifiers keep backward compatibility; `go mod tidy` leaves no diff.
+- Exported identifiers keep backward compatibility.
 
 ## Default libraries
 
