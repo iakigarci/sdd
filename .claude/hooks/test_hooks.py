@@ -259,6 +259,13 @@ class Stop(unittest.TestCase):
         )
         self.assertEqual(status.stdout.splitlines(), [" M main.go"])
 
+    def test_dirty_tree_without_record_runs_once(self) -> None:
+        # ASSUMP-1: with no passing record, the baseline is HEAD's tree.
+        (self.project / "main.go").write_text("uncommitted before the session\n")
+        self.assert_silent(self.stop())
+        self.assert_silent(self.stop())
+        self.assertEqual(self.calls(), ["just fast"])
+
     def test_untracked_file_counts_as_change(self) -> None:
         (self.project / "new.go").write_text("package main\n")
         self.assert_silent(self.stop())
