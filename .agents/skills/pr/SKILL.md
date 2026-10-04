@@ -39,6 +39,8 @@ Part of #<parent>
 - **Before:** <screenshot/output/failing test run>
   **After:** <screenshot/output/passing test run>
 
+Review findings: <raised> raised, <acted on> acted on
+
 ## Merge Danger
 
 **Door:** <one-way or two-way>
