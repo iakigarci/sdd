@@ -1,6 +1,6 @@
 ---
 name: project-init
-description: "Turn a fresh checkout of this template into a real project: interview, pick the stack, fill AGENTS.md and SPEC.md, apply the language template. Run once."
+description: "Turn a fresh template checkout into a project: interview, pick the stack, fill AGENTS.md and SPEC.md, apply the language template. Run once."
 disable-model-invocation: true
 ---
 
