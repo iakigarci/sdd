@@ -17,6 +17,7 @@ Local changes:
 - `to-spec`: template gains a Threat Model section (trust boundaries, assets, one STRIDE pass).
 - `code-review`: standards sources include `docs/standards/` and ADRs; findings carry severity and a Security line; sub-agent briefs ask for findings only instead of a word cap.
 - `code-review`: both axes run as named agents in `.claude/agents/` (Sonnet `standards-reviewer` carrying the brief and smell baseline; Opus `spec-reviewer`, read-only through `.claude/hooks/review-bash-guard.sh`, no project instructions, given only the fixed point and spec reference); `scripts/check-independence.sh` flags "Spec review not independent" from the `Co-Authored-By` trailers; generic sub-agents remain the fallback for agents without named agents.
+- Model assignment (`docs/agents/models.md`): `handoff` pins `model: sonnet` and `to-spec` `model: inherit`; `grill-with-docs`, `to-tickets`, `diagnosing-bugs`, `improve-codebase-architecture` open with "Run under `/model opus`"; `pr` runs as a forked agent (`context: fork`, `model: haiku`) that takes its inputs from `$ARGUMENTS` and returns text; `implement` pins no model, names when to escalate to `/model opus`, and passes the issue and evidence to the `pr` fork.
 
 ## samber/cc-skills-golang (MIT, `LICENSE-samber`)
 
