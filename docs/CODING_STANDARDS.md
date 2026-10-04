@@ -15,6 +15,7 @@ The PR title follows [Conventional Commits](https://www.conventionalcommits.org/
 
 ## Branches and pull requests
 
+- Claude Code hooks (`.claude/settings.json`) deny force-pushes, pushes to `main` and PR merges, so an agent cannot skip these rules; they are guard rails, and on a free private repo without a ruleset the only ones.
 - `main` is protected (`.github/rulesets/main.json`): changes arrive only by PR, with linear history, required `check` and `pr-title` jobs, and **squash merge** as the only merge method (commit title = PR title, commit message = PR description).
 - Branch names: `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
 - One PR = one commit on `main`. Review feedback goes in as new commits on the branch; nothing is force-pushed. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.

@@ -1,0 +1,16 @@
+{
+  "branch": "main",
+  "want": "deny",
+  "input": {
+    "session_id": "fixture",
+    "transcript_path": "/dev/null",
+    "cwd": "",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git push origin 2>&1 | tail -5",
+      "description": "main-current-redirect"
+    }
+  }
+}

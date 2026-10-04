@@ -1,0 +1,18 @@
+name: Claude Code hooks
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  # Fixture tests for .claude/hooks (guard and format). Stdlib Python only, so
+  # they run the same in the template repo and in Go or Python projects.
+  hooks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: python3 -m unittest discover -s .claude/hooks -v
