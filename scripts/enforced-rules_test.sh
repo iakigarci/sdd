@@ -11,9 +11,9 @@ standards="$root/docs/CODING_STANDARDS.md"
 fail=0
 
 # AGENTS.md: force-push and merge (guard hook, ruleset), title format
-# (pr-title), gate recipe detail (justfile).
+# (pr-title), branch format (branch-name), gate recipe detail (justfile).
 for rule in 'force-push' 'force push' '--force' 'merg' 'conventional commit' \
-  'just fmt' 'just lint' 'just test'; do
+  '<issue>-<slug>' 'just fmt' 'just lint' 'just test'; do
   grep -qiF -- "$rule" "$agents" && { echo "✗ AGENTS.md restates an enforced rule: '$rule'"; fail=1; }
 done
 

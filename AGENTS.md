@@ -29,7 +29,7 @@ Every gate is a `just` recipe (`justfile`), run the same locally and in CI. Done
 
 Every change reaches `main` as a PR the user reviews; hooks, CI and the `main` ruleset enforce the rest (`docs/CODING_STANDARDS.md` → Branches and pull requests).
 
-1. Branch from an up-to-date `main` as `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
+1. Branch from an up-to-date `main`; `scripts/check-branch-name.sh` holds the name format.
 2. Push, open the PR with `gh pr create`, body from the `pr` skill.
 3. Get CI green (`gh pr checks --watch`), then hand the user the PR URL.
 
