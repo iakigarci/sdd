@@ -49,7 +49,7 @@ Skip all preambles and keep prose brief. Use the user's domain language from `GL
 
 ### Issue links
 
-The body opens with `Closes #<issue>` so the reviewer reaches the issue in one click; it also closes the issue when the squash commit lands on `main`. When the issue has a parent (a `## Parent` section, or it is a sub-issue), add `Part of #<parent>` on the next line; otherwise drop that line. `Part of` links the parent without closing it.
+Keep `Part of #<parent>` only when the issue names a parent (its `## Parent` section); otherwise delete the line.
 
 ### Changes
 
