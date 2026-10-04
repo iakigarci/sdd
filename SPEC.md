@@ -2,6 +2,8 @@
 
 Product-level scope. Feature specs live as GitHub issues (`/to-spec`); decisions live in `docs/adr/`; terms live in `GLOSSARY.md`.
 
+This file changes only through an approved `/grill-with-docs` outcome.
+
 ## Problem
 
 {{PROBLEM}}

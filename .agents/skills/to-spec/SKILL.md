@@ -17,7 +17,7 @@ The issue tracker should have been provided to you. If not, tell the user to run
 
 Check with the user that these seams match their expectations.
 
-3. Write the spec using the template below, then publish it to the project issue tracker. When `docs/agents/triage-labels.md` exists, apply its `ready-for-agent` label - no need for additional triage.
+3. Write the spec using the template below, then publish it to the project issue tracker. Do not apply `ready-for-agent`: the user adds it after reading (`docs/workflow.md`, Human checkpoint).
 
 <spec-template>
 
