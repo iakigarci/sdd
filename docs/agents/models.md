@@ -15,7 +15,7 @@ Each workflow step runs on the model below. Judgement-heavy steps (interviews, t
 - **Single-turn skills** pin their model in frontmatter: `handoff` (`sonnet`), `to-spec` (`inherit`).
 - **Multi-turn skills** cannot be pinned and open with "Run under `/model opus`": `grill-with-docs`, `to-tickets` (it quizzes you until you approve the breakdown), `diagnosing-bugs`, `improve-codebase-architecture`, `close-epic` (it stops for your confirmation before writing). Switch back with `/model sonnet` afterwards.
 - **Reviewer agents** pin their model in `.claude/agents/`: `spec-reviewer` (`opus`), `standards-reviewer` (`sonnet`).
-- **PR body**: the `pr` skill runs as a forked Haiku agent (`context: fork`, `model: haiku`) and returns the title and body as text; `/implement` opens the PR itself.
+- **PR body**: the [`pr` skill](../../.agents/skills/pr/SKILL.md) runs as a forked Haiku agent (`context: fork`, `model: haiku`) and returns the title and body as text; `/implement` opens the PR itself.
 
 ## Caveat: `model:` lasts one turn
 

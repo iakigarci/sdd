@@ -102,9 +102,27 @@ want "$arch" 'domain-modeling' 'a call to the domain-modeling skill'
 forbid "$arch" 'would deleting it concentrate' 'the deletion-test definition (codebase-design → Principles)'
 forbid "$arch" 'nearly as complex as the implementation' 'the shallow-module definition (codebase-design → Deep vs shallow)'
 forbid "$arch" 'Only offer when' 'the ADR criteria (domain-modeling → Offer ADRs sparingly)'
+links_resolve "$usage"
+for f in implement/SKILL.md; do
+  want "$root/.agents/skills/$f" '\.\./pr/SKILL\.md' 'a link to the pr skill template'
+done
+want "$models" '\.\./\.\./\.agents/skills/pr/SKILL\.md' 'a link to the pr skill template'
+want "$usage" '\.agents/skills/pr/SKILL\.md' 'a link to the pr skill template'
+want "$root/.agents/skills/VENDORED.md" 'pr/SKILL\.md' 'a link to the pr skill template'
+want "$root/.agents/skills/VENDORED.md" '`domain-modeling`:.*Not ephemeral' 'the domain-modeling local change'
+want "$root/.agents/skills/VENDORED.md" '`improve-codebase-architecture`:.*codebase-design' 'the improve-codebase-architecture local change'
+want "$root/justfile" '^check: .*script-tests' 'script-tests in root check'
 forbid "$usage" 'roughly under 400' 'the PR size rule (CODING_STANDARDS → Branches and pull requests)'
 forbid "$usage" 'Update branch' 'the branch-update rule (CODING_STANDARDS → Branches and pull requests)'
 want "$standards" 'AGENTS\.md#working-rules' 'a link to the agent logging rule in AGENTS.md'
+
+# Rules the golang-* skills state are linked, not copied (see the go.md and
+# CODING_STANDARDS sections removed in the dedupe).
+forbid "$standards" 'Handle each error once' 'the log-or-return rule (golang-error-handling)'
+forbid "$standards" 'Structured logs' 'structured logging (golang-observability)'
+forbid "$gostd" 'ErrX' 'the sentinel naming rule (golang-naming)'
+forbid "$gostd" 'race detector' 'the race rule (golang-concurrency)'
+forbid "$gostd" 'injected rather than global' 'the logging injection rule (golang-observability)'
 
 ((fail)) && exit 1
 echo "dedup-rules: all checks pass"

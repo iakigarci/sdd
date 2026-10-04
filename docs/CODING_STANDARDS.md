@@ -47,22 +47,21 @@ The PR title is a [Conventional Commit](https://www.conventionalcommits.org/) su
 
 A finding is fixed, or suppressed inline with the reason (`//nolint:gosec // reason`, `.gitleaksignore` entry), never ignored by weakening the gate.
 
+Tools a `just` recipe fetches from the network are pinned to an exact version: `go run <pkg>@vX.Y.Z`, `uv run --with <pkg>==X.Y.Z`. Never `@latest` or an unpinned `--with`; `scripts/pinned-tools_test.sh` checks the justfiles.
+
 ## Tests
 
-- Test behaviour through the public interface of a module, not its internals.
-- Every acceptance criterion and every `ASSUMP-#` maps to a test; `/implement` step 5 records the mapping ([skill](../.agents/skills/implement/SKILL.md)).
 - Coverage threshold is enforced by `just check` (default 80%), measured across packages. Left out: Go entry points under `cmd/` (they only wire dependencies), generated code, and infrastructure adapters (`adapters/postgres|nats|grpc`, `platform/postgres|nats`), which the integration tests cover.
 - Go test mechanics: [`golang-testing`](../.agents/skills/golang-testing/SKILL.md).
 
 ## Errors
 
 - Return errors to the caller with context; crash only on programmer errors at startup.
-- Handle each error once: either log it or return it.
-- Go wrapping and sentinel errors: [`golang-error-handling`](../.agents/skills/golang-error-handling/SKILL.md).
+- Go wrapping, sentinels and the log-or-return rule: [`golang-error-handling`](../.agents/skills/golang-error-handling/SKILL.md).
 
 ## Logging and observability
 
-- Structured logs (key/value). Log IDs and hashes; never secrets, tokens or personal data. Agents follow the same rule ([AGENTS.md](../AGENTS.md#working-rules)).
+- Log content rule for agents and code alike: [AGENTS.md](../AGENTS.md#working-rules).
 - Services expose health endpoints and emit counters/histograms for request rate, errors and latency.
 - Go logging and metrics: [`golang-observability`](../.agents/skills/golang-observability/SKILL.md).
 

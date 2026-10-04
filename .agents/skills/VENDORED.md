@@ -9,14 +9,15 @@ Commit `d81f3a183412e71a5b1e84ca21bc1a35eea03a60` (2026-09-29).
 Local changes by skill:
 
 - `implement`: ticket gate on `ready-for-agent`; restates criteria; `ASSUMP-#` beside test seams (pause only at public API or persistence boundaries); pre-mortem drawing security failures from the Threat Model; `/security-review` pass (language security skill as fallback, manual for Python) with unfixed findings in Merge Danger; criteria → test evidence table; `just check` gate; review against `main`; pins no model and names `/model opus` escalation; ships as a squash-merged PR and passes the issue and evidence to the `pr` fork.
-- `pr`: `Review findings` evidence line (`scripts/pr-metrics.sh` reads it); squash-merge framing, Conventional Commit title, `Changes` bullets and evidence table; the body opens with `Closes #` as its first line, then `Part of #`; runs as a fork with `model: haiku`, takes inputs from `$ARGUMENTS` and returns text.
+- `pr`: `Review findings` evidence line (`scripts/pr-metrics.sh` reads it); squash-merge framing, Conventional Commit title, `Changes` bullets and evidence table; the body opens with `Closes #` as its first line, then `Part of #`; runs as a fork with `model: haiku`, takes inputs from `$ARGUMENTS` and returns text. Its body template is the one PR template ([`pr/SKILL.md`](pr/SKILL.md)); `/implement`, `docs/agents/models.md` and `USAGE.md` link to it.
 - `to-spec`: never applies `ready-for-agent`; Threat Model section in the template; `model: inherit`; description trimmed (always-loaded context).
 - `to-tickets`: never applies `ready-for-agent`; opens with "Run under `/model opus`"; description trimmed (always-loaded context).
 - `code-review`: standards sources include `docs/standards/` and ADRs; severity and Security line; findings-only sub-agent briefs (no word cap); both axes as named agents in `.claude/agents/` (Spec reviewer read-only via `review-bash-guard.sh`, no project instructions, given only the fixed point and spec reference), checked by `scripts/check-independence.sh`; generic sub-agents as fallback; description trimmed (always-loaded context).
 - `handoff`: pins `model: sonnet`.
-- `grill-with-docs`, `diagnosing-bugs`, `improve-codebase-architecture`: open with "Run under `/model opus`". `diagnosing-bugs` also has its description trimmed (always-loaded context).
+- `grill-with-docs`, `diagnosing-bugs`, `improve-codebase-architecture`: open with "Run under `/model opus`". `diagnosing-bugs` also has its description trimmed (always-loaded context). `improve-codebase-architecture` takes its vocabulary from `codebase-design` (link in the intro), links the deletion test to `codebase-design`, and offers ADRs through `domain-modeling` (the ADR offer moved out of the skill).
 - `grilling`, `codebase-design`: description trimmed (always-loaded context); no other local changes.
-- `domain-modeling`, `tdd`, `writing-for-agents`: no local changes.
+- `domain-modeling`: ADR offer condition 4, "Not ephemeral" (the reason is more than "not worth it right now" or self-evident), in "Offer ADRs sparingly".
+- `tdd`, `writing-for-agents`: no local changes.
 
 grilling, domain-modeling, grill-with-docs, to-spec, to-tickets, implement, tdd, codebase-design, code-review, pr, diagnosing-bugs, improve-codebase-architecture, handoff, writing-for-agents
 

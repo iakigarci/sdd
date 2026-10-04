@@ -5,7 +5,7 @@ Go-specific rules on top of `docs/CODING_STANDARDS.md`. The `golang-*` skills in
 ## Toolchain
 
 - Go version pinned in `mise.toml` and `go.mod`.
-- `golangci-lint` v2 with `.golangci.yml` (formatting via `gofumpt` + `goimports`, `gosec` for SAST, `depguard` for the layer rule below), `govulncheck`, race detector on in tests.
+- `golangci-lint` v2 with `.golangci.yml` (formatting via `gofumpt` + `goimports`, `gosec` for SAST, `depguard` for the layer rule below), `govulncheck`; the `test` recipe runs with `-race`.
 - `buf` for protobuf lint, breaking-change checks and code generation; `sqlc` for typed queries. Both run through `just`.
 
 ## Architecture: domain-driven design
@@ -73,8 +73,6 @@ db/queries/                    sqlc query files
 ## Code
 
 - Domain errors are typed so adapters can map them to HTTP statuses and gRPC codes (`golang-error-handling` covers wrapping).
-- Sentinel errors are named `ErrX`. Exported identifiers keep backward compatibility ([rule](../CODING_STANDARDS.md#compatibility)).
-- Logging is `log/slog`, injected rather than global (`golang-observability`).
 - Dependencies are injected by hand: constructors take what they need, and `cmd/<service>/main.go` wires them. No DI library or container.
 - Configuration is one typed struct, loaded from the environment and validated at startup in `internal/platform` ([rule](../CODING_STANDARDS.md#configuration-and-secrets)).
 
