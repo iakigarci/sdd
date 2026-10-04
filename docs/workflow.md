@@ -24,6 +24,7 @@ Several tickets under one parent.
 3. The parent issue states how it ships: "behind a flag", or "hold the release PR until the last ticket lands".
 4. You add `ready-for-agent` to each child you approve.
 5. `/implement` each child. Unblocked tickets in separate areas may run in parallel (see below).
+6. `/close-epic` on the parent once every child is closed: independent spec review over the epic, permanent decisions written back, parent closed with a summary.
 
 ## Hotfix
 
