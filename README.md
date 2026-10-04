@@ -15,7 +15,7 @@ release-please opens its release PR with `GITHUB_TOKEN` by default, and GitHub d
 
 ## Git flow
 
-The rules are in [CODING_STANDARDS → Branches and pull requests](docs/CODING_STANDARDS.md#branches-and-pull-requests). This template's own gates are the root `justfile` (`just check`), run by its CI jobs. Rulesets need a public repo or GitHub Pro/Team; on a free private repo `main` stays unprotected and the flow rests on the Claude Code hooks and `AGENTS.md`.
+The rules are in [CODING_STANDARDS → Branches and pull requests](docs/CODING_STANDARDS.md#branches-and-pull-requests). This template's own gates are the root `justfile` (`just check`), run by its CI jobs. Its ruleset (`.github/rulesets/template.json`) requires the `agents-md`, `claude-md`, `pr-title` and `branch-name` jobs instead of a `check` job. Rulesets need a public repo or GitHub Pro/Team; on a free private repo `main` stays unprotected and the flow rests on the Claude Code hooks and `AGENTS.md`.
 
 ## Token reduction
 
@@ -23,6 +23,7 @@ The rules are in [AGENTS.md → Token budget](AGENTS.md#token-budget). Setup for
 
 - [`rtk`](https://github.com/rtk-ai/rtk): `mise use -g rtk`, then `rtk init -g --hook-only --auto-patch` (Claude Code), `rtk init -g --codex`, `rtk init -g --agent cursor`, or `rtk init -g --gemini`.
 - `caveman` is vendored in `.agents/skills/caveman`; `/caveman lite` or `/caveman off` changes its level.
+- Always-loaded context: skill descriptions are trimmed to one line (about 1k tokens for all 30 model-invoked skills), and workflow skills are user-invoked, so they cost nothing until typed.
 
 ## Workflow
 
@@ -30,19 +31,19 @@ The agent chain is in [AGENTS.md → Workflow](AGENTS.md#workflow). The tracks a
 
 ## Layout
 
-- `AGENTS.md`: agent instructions, kept short; `CLAUDE.md` imports it ([rule](docs/CODING_STANDARDS.md#agent-instructions)).
-- `SPEC.md`: product-level scope.
-- `docs/`: coding standards ([`CODING_STANDARDS.md`](docs/CODING_STANDARDS.md), [`standards/`](docs/standards/)), workflow tracks, and [`agents/`](docs/agents/) for the issue tracker and model assignment.
-- `.agents/skills/`: skills in the open `SKILL.md` format; `.claude/skills` is a symlink to it.
-- `.claude/agents/`, `.claude/hooks/`: reviewer agents and the read-only Bash guard they share.
-- `templates/go`, `templates/python`, `templates/release/`: per-language project files and release workflows.
-- `scripts/`, `justfile`, `mise.toml`: the gates behind `just check`, and the tools they pin.
-- `.github/`: PR template, CI, security workflow and rulesets.
-- `lefthook.yml`: local pre-commit and pre-push hooks.
+- [`AGENTS.md`](AGENTS.md), [`CLAUDE.md`](CLAUDE.md): agent instructions ([rule](docs/CODING_STANDARDS.md#agent-instructions)).
+- [`SPEC.md`](SPEC.md): product scope ([rule](AGENTS.md#stack)).
+- [`docs/`](docs/): standards ([rule](docs/CODING_STANDARDS.md)), [workflow](docs/workflow.md), [agent config](docs/agents/).
+- [`.agents/skills/`](.agents/skills/): skills ([listing](.agents/skills/VENDORED.md)).
+- [`.claude/`](.claude/): reviewer agents, hooks ([rule](docs/CODING_STANDARDS.md#branches-and-pull-requests)).
+- [`templates/`](templates/): per-language project files.
+- [`scripts/`](scripts/), [`justfile`](justfile): gates ([rule](docs/CODING_STANDARDS.md)).
+- [`.github/`](.github/): PR template, CI, rulesets ([rule](docs/CODING_STANDARDS.md#branches-and-pull-requests)).
+- [`lefthook.yml`](lefthook.yml): local hooks.
 
 ## Security and dependency checks
 
-The list is in [CODING_STANDARDS → Security and dependency checks](docs/CODING_STANDARDS.md#security-and-dependency-checks).
+The list is in [CODING_STANDARDS → Security and dependency checks](docs/CODING_STANDARDS.md#security-and-dependency-checks). CodeQL and dependency review are free on public repos and need GitHub Code Security on private ones.
 
 ## Skills
 

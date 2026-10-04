@@ -61,6 +61,10 @@ for f in "$root"/*.md "$root"/docs/*.md "$root"/docs/*/*.md "$root"/.agents/skil
 done
 want "$usage" 'docs/agents/models\.md' 'a link to docs/agents/models.md for the model table'
 
+# README's Layout section: every entry is a link, not a description.
+layout_bad=$(awk '/^## /{on = ($0 == "## Layout")} on && /^- / && !/\]\(/' "$readme")
+[[ -z $layout_bad ]] || { echo "✗ README Layout has entries without a link: $layout_bad"; fail=1; }
+
 # CODING_STANDARDS.md: the PR body rule links to the pr skill and its template.
 want "$standards" '\.agents/skills/pr/SKILL\.md' 'a link to the pr skill template'
 want "$standards" '\.github/pull_request_template\.md' 'a link to the PR template mirror'
@@ -92,6 +96,15 @@ forbid "$arch" 'one adapter = hypothetical|the interface is the test surface' 't
 forbid "$arch" 'lazily' 'lazy file creation (domain-modeling → File structure)'
 want "$arch" 'codebase-design' 'a call to the codebase-design vocabulary'
 want "$arch" 'domain-modeling' 'a call to the domain-modeling skill'
+
+# Shared definitions stay in one place: the deletion-test and shallow-module
+# definitions live in codebase-design; the ADR criteria in domain-modeling.
+forbid "$arch" 'would deleting it concentrate' 'the deletion-test definition (codebase-design → Principles)'
+forbid "$arch" 'nearly as complex as the implementation' 'the shallow-module definition (codebase-design → Deep vs shallow)'
+forbid "$arch" 'Only offer when' 'the ADR criteria (domain-modeling → Offer ADRs sparingly)'
+forbid "$usage" 'roughly under 400' 'the PR size rule (CODING_STANDARDS → Branches and pull requests)'
+forbid "$usage" 'Update branch' 'the branch-update rule (CODING_STANDARDS → Branches and pull requests)'
+want "$standards" 'AGENTS\.md#working-rules' 'a link to the agent logging rule in AGENTS.md'
 
 ((fail)) && exit 1
 echo "dedup-rules: all checks pass"

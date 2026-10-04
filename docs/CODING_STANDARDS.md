@@ -62,7 +62,7 @@ A finding is fixed, or suppressed inline with the reason (`//nolint:gosec // rea
 
 ## Logging and observability
 
-- Structured logs (key/value). Log IDs and hashes; never secrets, tokens or personal data.
+- Structured logs (key/value). Log IDs and hashes; never secrets, tokens or personal data. Agents follow the same rule ([AGENTS.md](../AGENTS.md#working-rules)).
 - Services expose health endpoints and emit counters/histograms for request rate, errors and latency.
 - Go logging and metrics: [`golang-observability`](../.agents/skills/golang-observability/SKILL.md).
 

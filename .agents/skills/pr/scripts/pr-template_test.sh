@@ -51,6 +51,11 @@ grep -qiE "$closing_keywords|Part of #" "$root/AGENTS.md" &&
 n=$(grep -ciE "$closing_keywords" "$skill")
 ((n == 1)) || { echo "✗ pr SKILL.md mentions a closing keyword on $n lines, want 1 (the template)"; fail=1; }
 
+# The mirror has the skill template's sections, in the same order.
+heads() { grep -E '^## ' | tr -d '\r'; }
+[[ "$(skill_body | heads)" == "$(template_body | heads)" ]] ||
+  { echo "✗ pull_request_template.md section headings differ from the pr skill template"; fail=1; }
+
 # The local change survives an upstream refresh.
 grep -qE '^- `pr`:.*`Closes #`.*first line.*`Part of #`' "$root/.agents/skills/VENDORED.md" ||
   { echo "✗ VENDORED.md does not record the issue-link change to pr"; fail=1; }
