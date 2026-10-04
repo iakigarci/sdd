@@ -10,10 +10,20 @@ skills="$root/.agents/skills"
 doc="$root/docs/agents/models.md"
 fail=0
 
+# ASSUMP-1: to-tickets quizzes the user until approval, so it is multi-turn.
+multi_turn=(grill-with-docs diagnosing-bugs improve-codebase-architecture to-tickets)
+# ASSUMP-3: /implement and the skills it invokes mid-turn never pin a model,
+# so /model opus escalates the whole turn and nothing switches it back.
+unpinned=(implement tdd code-review)
+pinned=(handoff to-spec pr)
+# Skills whose model changed here: each points at the doc and is recorded
+# in VENDORED.md.
+changed=("${pinned[@]}" "${multi_turn[@]}" implement)
+
 # frontmatter <file>: the lines between the first two `---`.
 frontmatter() { awk '/^---$/ {n++; next} n == 1' "$1"; }
 
-# body <file>: the first non-empty line after the frontmatter.
+# first_line <file>: the first non-empty line after the frontmatter.
 first_line() { awk '/^---$/ {n++; next} n >= 2 && NF {print; exit}' "$1"; }
 
 model_of() { frontmatter "$skills/$1/SKILL.md" | sed -n 's/^model: //p'; }
@@ -27,7 +37,7 @@ if [[ -f $doc ]]; then
     '\| Haiku \|.*PR body'; do
     grep -qE -- "$row" "$doc" || { echo "✗ models.md: no table row /$row/"; fail=1; }
   done
-  grep -qiE 'model:.*(rest of the|one|current) turn' "$doc" ||
+  grep -qE '`model:` frontmatter applies for the rest of the current turn only' "$doc" ||
     { echo "✗ models.md: no caveat that skill model: lasts one turn"; fail=1; }
 else
   echo "✗ docs/agents/models.md missing"; fail=1
@@ -47,22 +57,19 @@ want_model handoff sonnet
 want_model to-spec inherit # ASSUMP-2: Opus/Sonnet means the session's model
 want_model pr haiku
 
-# ASSUMP-3: /implement and the skills it invokes mid-turn never pin a model,
-# so /model opus escalates the whole turn and nothing switches it back.
-for skill in implement tdd code-review; do
+for skill in "${unpinned[@]}"; do
   want_model "$skill" ''
 done
 
 # 4. Multi-turn skills open with the /model opus instruction and pin nothing.
-# ASSUMP-1: to-tickets quizzes the user until approval, so it is multi-turn.
-for skill in grill-with-docs diagnosing-bugs improve-codebase-architecture to-tickets; do
+for skill in "${multi_turn[@]}"; do
   first_line "$skills/$skill/SKILL.md" | grep -qF 'Run under `/model opus`' ||
     { echo "✗ $skill: does not open with 'Run under \`/model opus\`'"; fail=1; }
   want_model "$skill" ''
 done
 
 # Every skill that names a model points at the doc.
-for skill in handoff to-spec pr grill-with-docs diagnosing-bugs improve-codebase-architecture to-tickets implement; do
+for skill in "${changed[@]}"; do
   grep -qF 'docs/agents/models.md' "$skills/$skill/SKILL.md" ||
     { echo "✗ $skill: does not reference docs/agents/models.md"; fail=1; }
 done
@@ -73,15 +80,23 @@ pr=$skills/pr/SKILL.md
 frontmatter "$pr" | grep -qx 'context: fork' || { echo "✗ pr: not context: fork"; fail=1; }
 grep -qF '$ARGUMENTS' "$pr" || { echo "✗ pr: does not read \$ARGUMENTS"; fail=1; }
 grep -qiE 'return.*(title|body).*text' "$pr" || { echo "✗ pr: does not say it returns text"; fail=1; }
+grep -qF 'do not create, edit or comment on the PR yourself' "$pr" ||
+  { echo "✗ pr: does not forbid the fork from touching the PR"; fail=1; }
+grep -qE '`gh pr create` with the title and body the `pr` skill returns' "$skills/implement/SKILL.md" ||
+  { echo "✗ implement: does not open the PR itself from the pr skill's text"; fail=1; }
 grep -qE 'pr` skill.*issue.*evidence.*arguments' "$skills/implement/SKILL.md" ||
   { echo "✗ implement: does not pass the issue and evidence to the pr skill"; fail=1; }
 
 # 6. /implement names when to escalate to Opus.
-grep -qE '\*\*Escalate\*\*.*`/model opus`' "$skills/implement/SKILL.md" ||
-  { echo "✗ implement: no **Escalate** step naming \`/model opus\`"; fail=1; }
+escalate=$(grep -E '^\*\*Escalate\*\*.*`/model opus`' "$skills/implement/SKILL.md")
+[[ -n $escalate ]] || { echo "✗ implement: no **Escalate** step naming \`/model opus\`"; fail=1; }
+# The triggers, not only the instruction, are named.
+for trigger in 'more than three `ASSUMP-#`' 'concurrency, auth, crypto or a data migration' 'red after two root-cause attempts'; do
+  grep -qF -- "$trigger" <<<"$escalate" || { echo "✗ implement: escalation lacks trigger '$trigger'"; fail=1; }
+done
 
 # Local changes survive an upstream refresh.
-for skill in pr implement handoff to-spec to-tickets grill-with-docs diagnosing-bugs improve-codebase-architecture; do
+for skill in "${changed[@]}"; do
   grep -qE "^- .*\`$skill\`.*(model|/model opus)" "$root/.agents/skills/VENDORED.md" ||
     { echo "✗ VENDORED.md does not record the model change to $skill"; fail=1; }
 done
