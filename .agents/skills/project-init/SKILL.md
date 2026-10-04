@@ -41,7 +41,7 @@ Work on a `chore/project-init` branch.
    - Go CLI → `templates/release/goreleaser.yml`; keep `.goreleaser.yaml`.
    - library → `templates/release/tag-only.yml`.
    Delete the delivery files the shape does not use, then delete `templates/`.
-3. Delete the unused file in `docs/standards/`.
+3. Delete the unused file in `docs/standards/`, and `.github/rulesets/template.json` (the template repo's own ruleset).
 4. Trim to what the project uses:
    - No gRPC → no `buf.yaml`. gRPC → `buf config init` under `api/proto`, plus `buf.gen.yaml` for Go output.
    - No Postgres or NATS → delete the `integration` job in `ci.yml` and the `test-integration` recipe.
