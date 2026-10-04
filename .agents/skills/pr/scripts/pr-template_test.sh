@@ -35,8 +35,8 @@ opens_with_links() {
   ((closes == 1)) || { echo "✗ $name: $closes lines with a closing keyword, want 1"; fail=1; }
 }
 
-skill_body | opens_with_links "pr skill template"
-template_body | opens_with_links "pull_request_template.md"
+opens_with_links "pr skill template" < <(skill_body)
+opens_with_links "pull_request_template.md" < <(template_body)
 
 # The rule lives once in the coding standards' PR section, not in AGENTS.md.
 n=$(grep -ciE "$closing_keywords|Part of #" "$root/docs/CODING_STANDARDS.md")
