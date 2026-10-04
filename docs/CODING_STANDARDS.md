@@ -19,7 +19,7 @@ The PR title follows [Conventional Commits](https://www.conventionalcommits.org/
 - `main` is protected (`.github/rulesets/main.json`): changes arrive only by PR, with linear history, required `check` and `pr-title` jobs, and **squash merge** as the only merge method (commit title = PR title, commit message = PR description).
 - Branch names: `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
 - One PR = one commit on `main`. Review feedback goes in as new commits on the branch; nothing is force-pushed. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.
-- The PR body follows the `pr` skill (`.github/pull_request_template.md` mirrors it), closes its issue with `Closes #<n>`, and becomes the commit message, so it describes the final change, not the review history.
+- The PR body follows the `pr` skill (`.github/pull_request_template.md` mirrors it), opens with `Closes #<n>` on its first line (then `Part of #<parent>` when the issue belongs to a larger feature, which links the parent without closing it), and becomes the commit message, so it describes the final change, not the review history.
 - Aim for a diff a reviewer can hold in their head (roughly under 400 changed lines, excluding generated files).
 
 ## CI/CD

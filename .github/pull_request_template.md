@@ -1,5 +1,8 @@
 <!-- Title: Conventional Commit, e.g. feat(billing): add invoice export -->
 
+Closes #<issue>
+Part of #<parent> <!-- only when the issue has a parent; it stays open -->
+
 ## Changes
 
 - <imperative bullet, at most 6>
@@ -21,5 +24,3 @@
 
 **Door:** <one-way or two-way>
 **Blast Radius:** <one word>
-
-Closes #<issue>

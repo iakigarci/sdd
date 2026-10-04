@@ -14,6 +14,9 @@ PRs are squash-merged: the title becomes the commit subject on `main` and the bo
 Use this template for writing the PR body (`.github/pull_request_template.md` mirrors it):
 
 ```markdown
+Closes #<issue>
+Part of #<parent>
+
 ## Changes
 
 - <imperative bullet>
@@ -38,13 +41,15 @@ Use this template for writing the PR body (`.github/pull_request_template.md` mi
 **Blast Radius:** <one-word description>
 
 <optional: potential ramifications of merge>
-
-Closes #<issue>
 ```
 
 ## Sections
 
 Skip all preambles and keep prose brief. Use the user's domain language from `GLOSSARY.md`.
+
+### Issue links
+
+The body opens with `Closes #<issue>` so the reviewer reaches the issue in one click; it also closes the issue when the squash commit lands on `main`. When the issue has a parent (a `## Parent` section, or it is a sub-issue), add `Part of #<parent>` on the next line; otherwise drop that line. `Part of` links the parent without closing it.
 
 ### Changes
 
