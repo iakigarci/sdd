@@ -142,14 +142,4 @@ You will see these; they are working as intended.
 
 ## Cheat sheet
 
-| Command | Model | When |
-|---|---|---|
-| `/grill-with-docs` | Opus | Unclear idea, design or domain question |
-| `/to-spec` | Opus after a grill, else Sonnet | Turn the conversation into an issue |
-| `/to-tickets #<n>` | Opus | Break a big feature into child issues |
-| `/implement #<n>` | Sonnet (Opus for hard tickets) | Ship one approved ticket |
-| `/code-review <ref>` | runs its own agents | Review any branch by hand; `/implement` already runs it |
-| `/diagnosing-bugs` | Opus | Bug with unknown cause, perf regression |
-| `/close-epic <n>` | Opus | All children of a parent are merged |
-| `/improve-codebase-architecture` | Opus | Every few days |
-| `/handoff` | Sonnet | Continue in a fresh session |
+The model each command runs on is in [docs/agents/models.md](docs/agents/models.md); this guide does not repeat that table.
