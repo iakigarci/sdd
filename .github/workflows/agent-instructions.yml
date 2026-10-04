@@ -6,8 +6,8 @@ on:
 permissions:
   contents: read
 
-# Generated projects run these inside `just check`; the template repo has no
-# justfile, so it runs the scripts directly. The template ruleset
+# Generated projects run these inside `just check`; the template repo runs the
+# same recipes from its root justfile. The template ruleset
 # (.github/rulesets/template.json) requires both jobs, and a skipped job counts
 # as passing: IS_TEMPLATE must be `true` on the template repo.
 jobs:
@@ -18,7 +18,8 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: scripts/check-agents-md.sh 150
+      - uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
+      - run: just agents-md
 
   claude-md:
     if: vars.IS_TEMPLATE == 'true'
@@ -27,4 +28,5 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: scripts/check-claude-md.sh
+      - uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
+      - run: just claude-md
