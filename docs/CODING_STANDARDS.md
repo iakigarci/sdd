@@ -19,11 +19,11 @@ The PR title is a [Conventional Commit](https://www.conventionalcommits.org/) su
 - Branch names are `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`; `scripts/check-branch-name.sh` (CI job `branch-name`) checks them and lists the exempt bot branches.
 - One PR = one commit on `main`. Review feedback goes in as new commits on the branch. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.
 - The PR body follows the `pr` skill (`.github/pull_request_template.md` mirrors it), opens with `Closes #<n>` on its first line (then `Part of #<parent>` when the issue belongs to a larger feature, which links the parent without closing it), and becomes the commit message, so it describes the final change, not the review history.
-- Aim for a diff a reviewer can hold in their head. `scripts/check-pr-size.sh` (CI job `pr-size`) warns past 400 changed lines and lists what counts as generated; mark other generated files `linguist-generated` in `.gitattributes`.
+- Aim for a diff a reviewer can hold in their head (roughly under 400 changed lines, excluding generated files).
 
 ## CI/CD
 
-- CI (`.github/workflows/ci.yml`) runs `just check` with the toolchain pinned in `mise.toml`, so local and CI gates are identical. `pr-title.yml` checks the PR title, which becomes the commit subject; `pr-shape.yml` checks the branch name and warns on PR size.
+- CI (`.github/workflows/ci.yml`) runs `just check` with the toolchain pinned in `mise.toml`, so local and CI gates are identical. `pr-title.yml` checks the PR title, which becomes the commit subject; `branch-name.yml` checks the branch name.
 - Releases: merging to `main` updates a release-please PR (version bump + changelog from commit types). Merging that PR tags the release and runs the publish job: container image to GHCR for services, GoReleaser binaries for CLIs, tag only for libraries.
 - Dependabot opens weekly grouped updates with Conventional Commit prefixes, including the SHA pins of GitHub Actions.
 

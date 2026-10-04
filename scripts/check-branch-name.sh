@@ -2,7 +2,7 @@
 # Branch names tie a PR to its issue: `<type>/<issue>-<slug>`, where type is a
 # Conventional Commit type. Bot branches (dependabot, release-please) and the
 # one-off `/project-init` branch are exempt. Used by CI
-# (.github/workflows/pr-shape.yml).
+# (.github/workflows/branch-name.yml).
 #   check-branch-name.sh "<branch>"
 set -euo pipefail
 

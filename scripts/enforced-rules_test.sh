@@ -24,7 +24,7 @@ grep -qE '\b72\b' "$standards" &&
   { echo "✗ CODING_STANDARDS.md restates the PR title length"; fail=1; }
 
 # It names the tool that enforces each rule instead.
-for tool in scripts/check-pr-title.sh scripts/check-branch-name.sh scripts/check-pr-size.sh \
+for tool in scripts/check-pr-title.sh scripts/check-branch-name.sh \
   .claude/settings.json .github/rulesets/main.json; do
   grep -qF "\`$tool\`" "$standards" || { echo "✗ CODING_STANDARDS.md does not point to $tool"; fail=1; }
 done

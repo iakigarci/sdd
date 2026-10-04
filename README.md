@@ -51,12 +51,12 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 | `templates/go`, `templates/python` | `mise.toml`, justfile, lint config, CI, dependabot, Dockerfile, gitignore per language (plus `.goreleaser.yaml` for Go CLIs). |
 | `templates/release/` | Release workflow per shape: container (GHCR), goreleaser, tag-only. |
 | `scripts/check-pr-title.sh` | Conventional Commit check for PR titles (CI). |
-| `scripts/check-branch-name.sh`, `scripts/check-pr-size.sh` | `<type>/<issue>-<slug>` branch-name check, and a warning past 400 changed lines (CI, `pr-shape.yml`). |
+| `scripts/check-branch-name.sh` | `<type>/<issue>-<slug>` branch-name check (CI, `branch-name.yml`). |
 | `scripts/check-agents-md.sh` | Keeps `AGENTS.md` (with its `@` imports) at 150 lines or fewer; part of `just check`. |
 | `.claude/settings.json`, `.claude/hooks/` | Claude Code hooks: deny force-push, push to `main` and PR merges; format the edited Go/Python file; on Stop, run `just fast` when code changed and send failures back to the agent. Guard rails; the `main` ruleset is the real block. Tests run in `hooks.yml`. |
 | `scripts/check-claude-md.sh` | Fails when `CLAUDE.md` exists without an `@AGENTS.md` import; part of `just check`. |
 | `lefthook.yml` | pre-commit fmt/lint, pre-push `just check`. |
-| `.github/` | PR template, PR-title and PR-shape checks, security workflow (dependency review, CodeQL, weekly scans), `main` rulesets for projects (`main.json`) and this template (`template.json`). |
+| `.github/` | PR template, PR-title and branch-name checks, security workflow (dependency review, CodeQL, weekly scans), `main` rulesets for projects (`main.json`) and this template (`template.json`). |
 
 ## Security and dependency checks
 

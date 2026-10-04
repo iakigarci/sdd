@@ -43,7 +43,6 @@ script-tests:
     .agents/skills/code-review/scripts/reviewer-agents_test.sh
     .agents/skills/pr/scripts/pr-template_test.sh
     scripts/check-branch-name_test.sh
-    scripts/check-pr-size_test.sh
     scripts/enforced-rules_test.sh
 
 # Secrets committed anywhere in git history.
