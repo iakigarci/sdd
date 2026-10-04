@@ -8,7 +8,7 @@ permissions:
 
 jobs:
   # Generated projects run these inside `just check` (`script-tests` recipe);
-  # the template repo has no justfile, so it runs the scripts directly.
+  # the template repo runs the same recipe from its root justfile.
   script-tests:
     if: vars.IS_TEMPLATE == 'true'
     runs-on: ubuntu-latest
@@ -16,14 +16,5 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - run: .claude/hooks/review-bash-guard_test.sh
-      - run: .agents/skills/code-review/scripts/check-independence_test.sh
-      - run: .agents/skills/code-review/scripts/reviewer-agents_test.sh
-      - run: .agents/skills/pr/scripts/pr-template_test.sh
-      - run: scripts/check-branch-name_test.sh
-      - run: scripts/enforced-rules_test.sh
-      - run: scripts/epic-children_test.sh
-      - run: scripts/pr-metrics_test.sh
-      - run: .agents/skills/implement/scripts/security-pass_test.sh
-      - run: .agents/skills/implement/scripts/model-assignment_test.sh
-      - run: .agents/skills/implement/scripts/workflow-tracks_test.sh
+      - uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
+      - run: just script-tests

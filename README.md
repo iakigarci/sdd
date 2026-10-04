@@ -15,7 +15,7 @@ release-please opens its release PR with `GITHUB_TOKEN` by default, and GitHub d
 
 ## Git flow
 
-`main` accepts changes only by PR, and each PR lands as one commit: squash merge only, with the PR title as the commit subject and the PR description as its body. Linear history, green `check`, `pr-title` and `branch-name` jobs (`.github/rulesets/main.json`). This template repo has no `check` job, so its own ruleset (`.github/rulesets/template.json`) requires `agents-md`, `claude-md`, `pr-title` and `branch-name` instead. Rulesets need a public repo or GitHub Pro/Team; on a free private repo `main` stays unprotected and the flow rests on the Claude Code hooks and `AGENTS.md`. Agents branch, commit, push, open the PR and get CI green; you review and merge on GitHub.
+`main` accepts changes only by PR, and each PR lands as one commit: squash merge only, with the PR title as the commit subject and the PR description as its body. Linear history, green `check`, `pr-title` and `branch-name` jobs (`.github/rulesets/main.json`). The template repo's own gates are the root `justfile` (`just check`: `agents-md`, `claude-md`, `script-tests`, `secrets`, `workflows`), and its CI jobs run those recipes. Its ruleset (`.github/rulesets/template.json`) requires the `agents-md`, `claude-md`, `pr-title` and `branch-name` jobs instead of a `check` job. Rulesets need a public repo or GitHub Pro/Team; on a free private repo `main` stays unprotected and the flow rests on the Claude Code hooks and `AGENTS.md`. Agents branch, commit, push, open the PR and get CI green; you review and merge on GitHub.
 
 ## Token reduction
 
@@ -44,7 +44,6 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 |---|---|
 | `AGENTS.md` | Always-loaded agent instructions, kept short. `CLAUDE.md` imports it. |
 | `SPEC.md` | Product-level scope; feature specs are GitHub issues. |
-| `USAGE.md` | Step-by-step guide per scenario: small fix, feature, batches, big feature, hotfix. |
 | `docs/CODING_STANDARDS.md`, `docs/standards/` | How code is written; read by `/code-review`. |
 | `docs/agents/` | Issue tracker and domain-doc conventions for the skills; `models.md` assigns each workflow step its model (Sonnet session default). |
 | `.agents/skills/` | Skills in the open `SKILL.md` format. `.claude/skills` is a symlink to it. |
@@ -53,6 +52,7 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 | `templates/release/` | Release workflow per shape: container (GHCR), goreleaser, tag-only. |
 | `scripts/check-pr-title.sh` | Conventional Commit check for PR titles (CI). |
 | `scripts/check-branch-name.sh` | `<type>/<issue>-<slug>` branch-name check (CI, `branch-name.yml`). |
+| `justfile`, `mise.toml` | Template-level gates (`just check`) and the tools they pin (`just`, `gitleaks`, `zizmor`). Generated projects get their own from `templates/`. |
 | `scripts/check-agents-md.sh` | Keeps `AGENTS.md` (with its `@` imports) at 150 lines or fewer; part of `just check`. |
 | `.claude/settings.json`, `.claude/hooks/` | Claude Code hooks: deny force-push, push to `main` and PR merges; format the edited Go/Python file; on Stop, run `just fast` when code changed and send failures back to the agent. Guard rails; the `main` ruleset is the real block. Tests run in `hooks.yml`. |
 | `scripts/check-claude-md.sh` | Fails when `CLAUDE.md` exists without an `@AGENTS.md` import; part of `just check`. |

@@ -9,8 +9,10 @@ on:
 permissions:
   contents: read
 
-# Jobs skip when the repo variable IS_TEMPLATE is 'true' (set only on the
-# template repo, which has no code to scan).
+# dependency-review and codeql skip when the repo variable IS_TEMPLATE is
+# 'true' (the template has no code to scan). scheduled-scan runs on the
+# template too, through the root justfile; workflows runs only on the template,
+# since generated projects lint their workflows inside `just check`.
 jobs:
   # New dependencies in the PR: known vulnerabilities and licences.
   # Needs the dependency graph: free on public repos, GitHub Code Security on private ones.
@@ -44,7 +46,7 @@ jobs:
 
   # Re-run vulnerability and secret scans on main every week.
   scheduled-scan:
-    if: github.event_name != 'pull_request' && vars.IS_TEMPLATE != 'true'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -53,3 +55,14 @@ jobs:
           persist-credentials: false
       - uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
       - run: just vuln secrets
+
+  # GitHub Actions workflows: injection, unpinned actions, excessive permissions.
+  workflows:
+    if: vars.IS_TEMPLATE == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: jdx/mise-action@9149ea85001c7435d5a66bb127d6a1b6227cb0a5 # v5.0.0
+      - run: just workflows
