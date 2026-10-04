@@ -4,6 +4,8 @@ description: Scan a codebase for deepening opportunities, present them as a visu
 disable-model-invocation: true
 ---
 
+Run under `/model opus` (see `docs/agents/models.md`); this skill spans several turns, so it cannot pin its own model.
+
 # Improve Codebase Architecture
 
 Surface architectural friction and propose **deepening opportunities**: refactors that turn shallow modules into deep ones. The aim is testability and AI-navigability.
