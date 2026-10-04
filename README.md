@@ -45,7 +45,7 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 | `AGENTS.md` | Always-loaded agent instructions, kept short. `CLAUDE.md` imports it. |
 | `SPEC.md` | Product-level scope; feature specs are GitHub issues. |
 | `docs/CODING_STANDARDS.md`, `docs/standards/` | How code is written; read by `/code-review`. |
-| `docs/agents/` | Issue tracker and domain-doc conventions for the skills. |
+| `docs/agents/` | Issue tracker and domain-doc conventions for the skills; `models.md` assigns each workflow step its model (Sonnet session default). |
 | `.agents/skills/` | Skills in the open `SKILL.md` format. `.claude/skills` is a symlink to it. |
 | `.claude/agents/`, `.claude/hooks/` | Claude Code reviewer agents for `/code-review` (Opus `spec-reviewer`, Sonnet `standards-reviewer`) and the read-only Bash guard they share. |
 | `templates/go`, `templates/python` | `mise.toml`, justfile, lint config, CI, dependabot, Dockerfile, gitignore per language (plus `.goreleaser.yaml` for Go CLIs). |
