@@ -36,7 +36,7 @@ The issue is the spec. `/to-spec` does not label it; that is P2.
 
 ### P2. Approve the ticket (human checkpoint)
 
-The most important review in the workflow: a misunderstanding in the ticket passes every later check.
+The checkpoint rule is in [workflow.md](docs/workflow.md#human-checkpoint). Here is the step:
 
 1. Read the issue on GitHub: acceptance criteria, out of scope, threat section if present.
 2. Fix anything wrong by editing the issue, or ask the agent to rewrite it.
@@ -46,13 +46,11 @@ The most important review in the workflow: a misunderstanding in the ticket pass
 
 ### P3. Ship one ticket
 
-One ticket → one branch → one PR → one commit on `main`.
-
 1. Start clean: `/clear` (or a new session), then `git switch main && git pull`.
-2. Session model is Sonnet by default. For a hard ticket (concurrency, auth, crypto, data migration, many open questions) run `/model opus` first; `/implement` also stops and asks for this when it hits one of those.
+2. Pick the model for the ticket as [models.md](docs/agents/models.md) says; `/implement` stops and asks for Opus when a ticket needs it.
 3. `/implement #<n>`. It branches, restates the criteria and `ASSUMP-#`, builds test-first, runs `just check`, runs `/code-review` (and `/security-review` when the diff is sensitive), opens the PR and watches CI until green.
 4. Answer it if it pauses (a test seam crossing a public API or the database, an escalation).
-5. Review the PR on GitHub. The first line links the issue it closes; read the Evidence table and Merge Danger. Ask for changes in the session or in PR comments; fixes arrive as new commits.
+5. Review the PR on GitHub: the Evidence table and Merge Danger, laid out as in the [pr skill template](.agents/skills/pr/SKILL.md). Ask for changes in the session or in PR comments.
 6. Squash-merge on GitHub. Agents cannot merge; that step is yours.
 7. Optional, for workflow metrics: `scripts/pr-metrics.sh <pr> --post`.
 
@@ -118,7 +116,7 @@ Production is broken.
 2. P4 to find the real cause (skip when the cause is obvious).
 3. P1 (`gh issue create`) → P2 → P3 for the forward fix: smallest change, PR titled `fix: …`. Refactors go in a separate issue.
 4. Merge the release PR that release-please opens (a `fix:` makes a patch release).
-5. Done only when the symptom is gone in logs or metrics after the release.
+5. Confirm the symptom is gone in logs or metrics: [workflow.md → Hotfix](docs/workflow.md#hotfix).
 
 ## Running tickets in parallel
 
@@ -126,19 +124,11 @@ For 2–3 unblocked tickets that touch separate areas.
 
 1. `git switch main && git pull` in the main checkout.
 2. One terminal per ticket: `claude -w t<n>` (add `--tmux` for panes), then `/implement #<n>` in each.
-3. Merge the PRs one at a time. After each merge, bring the other branches up to date ([rule](docs/CODING_STANDARDS.md#branches-and-pull-requests)). Never force-push or base a branch on another open PR.
+3. Merge in the order [workflow.md → Parallel tickets](docs/workflow.md#parallel-tickets) gives.
 
 ## What the guard rails do
 
-You will see these; they are working as intended.
-
-| Guard | Effect |
-|---|---|
-| Format hook | Formats each file right after the agent edits it. |
-| Stop hook | When code changed, runs `just fast` (format check, lint, tests) before the agent may finish; on failure it sends the agent back to fix. |
-| Guard hook | Blocks force-push, any push to `main`, and `gh pr merge`. |
-| lefthook | pre-commit format/lint, pre-push full `just check`. |
-| CI and ruleset | `just check`, PR title, branch name; squash-merge only into `main`. |
+You will see these; they are working as intended. Each one's rule and where it is set: [CODING_STANDARDS → Branches and pull requests](docs/CODING_STANDARDS.md#branches-and-pull-requests), `.claude/settings.json`, `lefthook.yml`.
 
 ## Cheat sheet
 

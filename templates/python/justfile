@@ -26,7 +26,7 @@ cover:
 
 # Known vulnerabilities in locked dependencies.
 vuln:
-    uv run --with pip-audit pip-audit
+    uv run --with pip-audit==2.10.1 pip-audit
 
 # AGENTS.md stays small: it is loaded on every agent turn.
 agents-md:

@@ -31,7 +31,7 @@ Find a reference, not the contents; the Spec agent fetches the spec itself. In t
 
 1. Issue references in the commit messages or branch name (`#123`, `Closes #45`, `feat/42-…`).
 2. A path the user passed as an argument.
-3. A spec file under `docs/`, `specs/`, or `.scratch/` matching the branch name or feature.
+3. A spec file under `docs/` or `specs/` matching the branch name or feature.
 4. If nothing is found, ask the user where the spec is. If they say there isn't one, skip the Spec agent and report "no spec available".
 
 ### 3. Identify the standards sources

@@ -2,7 +2,8 @@
 """PostToolUse hook: format the one Go or Python file the agent just edited.
 
 Uses the project's formatter (the same tools as `just fmt`, on that file only).
-No-op in the template repo, which has no justfile yet. Never blocks the edit:
+No-op unless the project's justfile has a `fmt` recipe: the template repo's root
+justfile has none, so its Python hooks are not reformatted. Never blocks the edit:
 every failure, a missing formatter included, ends in exit 0 with no output;
 `just fmt-check` in the pre-commit hook and CI still catches what this misses.
 Tests: test_hooks.py.
@@ -21,6 +22,14 @@ FORMATTERS = {
 }
 
 
+def has_fmt_recipe(project: Path) -> bool:
+    try:
+        lines = (project / "justfile").read_text(errors="replace").splitlines()
+    except OSError:
+        return False
+    return any(line.startswith("fmt:") for line in lines)
+
+
 def main() -> None:
     try:
         payload = json.load(sys.stdin)
@@ -29,7 +38,7 @@ def main() -> None:
     except (json.JSONDecodeError, KeyError, TypeError, OSError):
         return
     formatter = FORMATTERS.get(target.suffix)
-    if not formatter or not (project / "justfile").is_file() or not target.is_file():
+    if not formatter or not has_fmt_recipe(project) or not target.is_file():
         return
     if not target.is_relative_to(project):
         return

@@ -106,5 +106,13 @@ forbid "$usage" 'roughly under 400' 'the PR size rule (CODING_STANDARDS → Bran
 forbid "$usage" 'Update branch' 'the branch-update rule (CODING_STANDARDS → Branches and pull requests)'
 want "$standards" 'AGENTS\.md#working-rules' 'a link to the agent logging rule in AGENTS.md'
 
+# Rules the golang-* skills state are linked, not copied (see the go.md and
+# CODING_STANDARDS sections removed in the dedupe).
+forbid "$standards" 'Handle each error once' 'the log-or-return rule (golang-error-handling)'
+forbid "$standards" 'Structured logs' 'structured logging (golang-observability)'
+forbid "$gostd" 'ErrX' 'the sentinel naming rule (golang-naming)'
+forbid "$gostd" 'race detector' 'the race rule (golang-concurrency)'
+forbid "$gostd" 'injected rather than global' 'the logging injection rule (golang-observability)'
+
 ((fail)) && exit 1
 echo "dedup-rules: all checks pass"

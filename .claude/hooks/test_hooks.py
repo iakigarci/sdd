@@ -17,6 +17,9 @@ HOOKS = Path(__file__).resolve().parent
 GUARD = HOOKS / "guard.py"
 FORMAT = HOOKS / "format.py"
 STOP = HOOKS / "stop.py"
+# A generated project's justfile: format.py formats only when it has a fmt recipe.
+FMT_JUSTFILE = "fmt:\n    golangci-lint fmt\n"
+TEMPLATE_JUSTFILE = "fast: agents-md claude-md\n\nagents-md:\n    scripts/check-agents-md.sh 150\n"
 
 
 def git_repo(path: Path, branch: str) -> None:
@@ -104,31 +107,31 @@ class Format(unittest.TestCase):
         return self.log.read_text().splitlines() if self.log.exists() else []
 
     def test_go_file_formats_only_that_file(self) -> None:
-        (self.project / "justfile").write_text("")
+        (self.project / "justfile").write_text(FMT_JUSTFILE)
         result = self.edit("internal/a/a.go")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.calls(), [f"golangci-lint fmt {self.project / 'internal/a/a.go'}"])
 
     def test_python_file_formats_only_that_file(self) -> None:
-        (self.project / "justfile").write_text("")
+        (self.project / "justfile").write_text(FMT_JUSTFILE)
         result = self.edit("src/pkg/mod.py", tool="Write")
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(self.calls(), [f"uv run ruff format {self.project / 'src/pkg/mod.py'}"])
 
     def test_other_files_untouched(self) -> None:
-        (self.project / "justfile").write_text("")
+        (self.project / "justfile").write_text(FMT_JUSTFILE)
         for rel in ("README.md", "go.mod", ".github/workflows/ci.yml"):
             self.assertEqual(self.edit(rel).returncode, 0)
         self.assertEqual(self.calls(), [])
 
     def test_markdown_edit_is_noop(self) -> None:
-        (self.project / "justfile").write_text("")
+        (self.project / "justfile").write_text(FMT_JUSTFILE)
         result = self.edit("docs/guide.md")
         self.assertEqual((result.returncode, result.stdout), (0, ""))
         self.assertEqual(self.calls(), [])
 
     def test_file_outside_project_untouched(self) -> None:
-        (self.project / "justfile").write_text("")
+        (self.project / "justfile").write_text(FMT_JUSTFILE)
         outside = self.root / "elsewhere.go"
         outside.write_text("x\n")
         payload = {"tool_name": "Edit", "tool_input": {"file_path": str(outside)}}
@@ -136,18 +139,20 @@ class Format(unittest.TestCase):
         self.assertEqual(self.calls(), [])
 
     def test_template_repo_is_noop(self) -> None:
+        # The template's root justfile has gates but no fmt recipe: nothing to format.
+        (self.project / "justfile").write_text(TEMPLATE_JUSTFILE)
         result = self.edit("main.go")
         self.assertEqual((result.returncode, result.stdout), (0, ""))
         self.assertEqual(self.calls(), [])
 
     def test_formatter_failure_never_blocks(self) -> None:
-        (self.project / "justfile").write_text("")
+        (self.project / "justfile").write_text(FMT_JUSTFILE)
         self.fake("golangci-lint", 3)
         result = self.edit("main.go")
         self.assertEqual((result.returncode, result.stdout), (0, ""))
 
     def test_missing_formatter_never_blocks(self) -> None:
-        (self.project / "justfile").write_text("")
+        (self.project / "justfile").write_text(FMT_JUSTFILE)
         (self.project / "main.go").write_text("x\n")
         env = {**self.env, "PATH": str(self.root / "empty")}
         payload = {"tool_name": "Edit", "tool_input": {"file_path": str(self.project / "main.go")}}
