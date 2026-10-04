@@ -58,7 +58,7 @@ Exception: if a prototype produced a snippet that encodes a decision more precis
 
 ## Threat Model
 
-A short security pass over the feature, one line per item. When the feature adds no trust boundary and touches no asset, write that in one line instead.
+A short security pass over the feature, one line per item.
 
 - **Trust boundaries**: where data or control crosses into more-trusted code (user input, network, other services, files, environment).
 - **Assets**: what an attacker wants (credentials, personal data, money, availability).

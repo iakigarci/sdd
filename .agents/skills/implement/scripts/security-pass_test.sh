@@ -32,7 +32,15 @@ has "implement Review step" "$review" \
   '/security-review' '\bauth' 'input parsing' 'serialization' 'SQL' '\bexec\b' \
   'secrets' 'file paths' 'network' 'golang-security' 'Merge Danger'
 
-has "implement Pre-mortem step" "$(step 3)" 'Pre-mortem' 'Threat Model'
+# The review is conditional on the diff, and unfixed findings reach the PR.
+has "implement Review step" "$review" \
+  'When the diff touches auth[^.;]*also run `/security-review`' \
+  'agents without that command run the language security skill' \
+  'for Python[^;]*manual pass' \
+  'security finding left unfixed goes into the PR.s Merge Danger'
+
+has "implement Pre-mortem step" "$(step 3)" \
+  'Pre-mortem' 'when the spec has a Threat Model section, draw the security failures from its threats'
 
 # template: the spec template between the <spec-template> tags.
 template=$(awk '/^<spec-template>$/ {on = 1; next} /^<\/spec-template>$/ {exit} on' "$to_spec")
@@ -42,12 +50,18 @@ has "to-spec Threat Model" "$threat" \
   'Trust boundaries' 'Assets' 'STRIDE' 'Spoofing' 'Tampering' 'Repudiation' \
   'Information disclosure' 'Denial of service' 'Elevation of privilege'
 
+# Every STRIDE letter gets its line: the pass cannot be skipped as a whole.
+grep -qiE 'one line each for Spoofing' <<<"$threat" ||
+  { echo "✗ to-spec Threat Model: STRIDE is not one line per letter"; fail=1; }
+grep -qiE 'instead|skip|omit' <<<"$threat" &&
+  { echo "✗ to-spec Threat Model: offers a way to skip the pass"; fail=1; }
+
 # The threat model sits with the design, before the tests that cover it.
 order=$(grep -E '^## (Implementation Decisions|Threat Model|Testing Decisions)$' <<<"$template" | tr '\n' '|')
 [[ $order == '## Implementation Decisions|## Threat Model|## Testing Decisions|' ]] ||
   { echo "✗ to-spec template: section order is '$order'"; fail=1; }
 
-grep -qE '^- `implement`:.*`/security-review`.*Merge Danger' "$vendored" ||
+grep -qE '^- `implement`:.*pre-mortem.*Threat Model.*`/security-review`.*Merge Danger' "$vendored" ||
   { echo "✗ VENDORED.md does not record the security pass in implement"; fail=1; }
 grep -qE '^- `to-spec`:.*Threat Model' "$vendored" ||
   { echo "✗ VENDORED.md does not record the Threat Model section in to-spec"; fail=1; }

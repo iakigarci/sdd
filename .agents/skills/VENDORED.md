@@ -10,7 +10,7 @@ grilling, domain-modeling, grill-with-docs, setup-matt-pocock-skills, to-spec, t
 
 Local changes:
 
-- `implement`: acceptance-criteria restatement, `ASSUMP-#`, pre-mortem, criteria → test evidence table, `just check` gate, review against `main`; ships as a PR that is squash-merged (branch commits free-form); pre-mortem draws from the spec's Threat Model; review adds `/security-review` (language security skill as fallback) when the diff touches a sensitive area, unfixed findings going into Merge Danger.
+- `implement`: acceptance-criteria restatement, `ASSUMP-#`, pre-mortem, criteria → test evidence table, `just check` gate, review against `main`; ships as a PR that is squash-merged (branch commits free-form); pre-mortem draws its security failures from the spec's Threat Model; review adds `/security-review` (language security skill as fallback, a manual pass for Python) when the diff touches a sensitive area, unfixed findings going into Merge Danger.
 - `pr`: squash-merge framing (title = commit subject, body = commit message), Conventional Commit title, `Changes` bullet section, evidence table; the body opens with `Closes #` as its first line, then `Part of #` for a parent issue.
 - `setup-matt-pocock-skills`: writes the Agent skills block to `AGENTS.md` (`CLAUDE.md` only imports it).
 - `to-spec`, `to-tickets`: apply `ready-for-agent` only when `docs/agents/triage-labels.md` exists.
