@@ -21,7 +21,7 @@ Implement the work described by the user in the spec or tickets.
    | ASSUMP-1 | `TestX_EmptyInput` | pass |
 
    A check you could not run is marked SIMULATED with the reason. When a check failed along the way, add a one-line root cause and fix.
-6. **Review**: use /code-review against `main`. Count the findings raised and acted on for the PR evidence line `Review findings: <raised> raised, <acted on> acted on`. When the diff touches auth, input parsing, serialization, SQL or exec calls, secrets, file paths or network calls, also run `/security-review`; agents without that command run the language security skill in review mode instead (`golang-security` for Go; for Python, which has no vendored security skill, a manual pass over those same areas). Fix the actionable findings; each security finding left unfixed goes into the PR's Merge Danger. Rerun `just check`.
+6. **Review**: use /code-review against `main`. Count the findings raised and acted on for the PR's review-findings line ([pr template](../pr/SKILL.md)). When the diff touches auth, input parsing, serialization, SQL or exec calls, secrets, file paths or network calls, also run `/security-review`; agents without that command run the language security skill in review mode instead (`golang-security` for Go; for Python, which has no vendored security skill, a manual pass over those same areas). Fix the actionable findings; each security finding left unfixed goes into the PR's Merge Danger. Rerun `just check`.
 7. **Ship as a PR**, following `AGENTS.md` → Git and pull requests:
    - Work on a `<type>/<issue>-<slug>` branch (create it from `main` first when you are on `main`).
    - Commit as often as useful; the PR is squash-merged into one commit.

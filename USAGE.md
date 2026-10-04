@@ -42,7 +42,7 @@ The checkpoint rule is in [workflow.md](docs/workflow.md#human-checkpoint). Here
 2. Fix anything wrong by editing the issue, or ask the agent to rewrite it.
 3. `gh issue edit <n> --add-label ready-for-agent`
 
-`/implement` refuses a ticket without the label.
+Without the label, `/implement` refuses ([checkpoint](docs/workflow.md#human-checkpoint)).
 
 ### P3. Ship one ticket
 
@@ -51,7 +51,7 @@ The checkpoint rule is in [workflow.md](docs/workflow.md#human-checkpoint). Here
 3. `/implement #<n>`. It branches, restates the criteria and `ASSUMP-#`, builds test-first, runs `just check`, runs `/code-review` (and `/security-review` when the diff is sensitive), opens the PR and watches CI until green.
 4. Answer it if it pauses (a test seam crossing a public API or the database, an escalation).
 5. Review the PR on GitHub: the Evidence table and Merge Danger, laid out as in the [pr skill template](.agents/skills/pr/SKILL.md). Ask for changes in the session or in PR comments.
-6. Squash-merge on GitHub. Agents cannot merge; that step is yours.
+6. Squash-merge on GitHub; the merge is yours ([guard rails](docs/CODING_STANDARDS.md#branches-and-pull-requests)).
 7. Optional, for workflow metrics: `scripts/pr-metrics.sh <pr> --post`.
 
 ### P4. Diagnose
@@ -99,7 +99,7 @@ If the items depend on each other, they are a big feature, not a batch.
 ### Big feature
 
 1. `/model opus`, `/grill-with-docs`, then `/to-spec`: this issue is the parent (the feature spec).
-2. In the parent issue, state how it ships: "behind a flag", or "hold the release PR until the last ticket lands".
+2. State how it ships in the parent issue ([workflow.md → Big feature](docs/workflow.md#big-feature)).
 3. `/to-tickets #<parent>` (still on Opus). Iterate on the breakdown until it is right; it publishes child issues with blocked-by links.
 4. P2 for each child you approve. Read the parent and every child before any code is written.
 5. `/model sonnet`. P3 for each unblocked child, in parallel when they touch separate areas. Pull `main` after each merge; newly unblocked children become available.
@@ -112,7 +112,7 @@ Context running out partway through a ticket: `/handoff`, then continue from the
 
 Production is broken.
 
-1. If a recent PR caused it, revert first: `gh pr view <culprit>` for the merge commit, `git revert <sha>` on a `fix/<issue>-revert-<slug>` branch, PR titled `fix: revert …`, merge, release.
+1. If a recent PR caused it, revert it first ([workflow.md → Hotfix](docs/workflow.md#hotfix)): `gh pr view <culprit>` for the merge commit, `git revert <sha>` on a `fix/<issue>-revert-<slug>` branch, PR titled `fix: revert …`, merge, release.
 2. P4 to find the real cause (skip when the cause is obvious).
 3. P1 (`gh issue create`) → P2 → P3 for the forward fix: smallest change, PR titled `fix: …`. Refactors go in a separate issue.
 4. Merge the release PR that release-please opens (a `fix:` makes a patch release).

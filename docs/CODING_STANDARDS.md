@@ -51,8 +51,6 @@ Tools a `just` recipe fetches from the network are pinned to an exact version: `
 
 ## Tests
 
-- Test behaviour through the public interface of a module, not its internals.
-- Every acceptance criterion and every `ASSUMP-#` maps to a test; `/implement` step 5 records the mapping ([skill](../.agents/skills/implement/SKILL.md)).
 - Coverage threshold is enforced by `just check` (default 80%), measured across packages. Left out: Go entry points under `cmd/` (they only wire dependencies), generated code, and infrastructure adapters (`adapters/postgres|nats|grpc`, `platform/postgres|nats`), which the integration tests cover.
 - Go test mechanics: [`golang-testing`](../.agents/skills/golang-testing/SKILL.md).
 
@@ -63,7 +61,7 @@ Tools a `just` recipe fetches from the network are pinned to an exact version: `
 
 ## Logging and observability
 
-- Log IDs and hashes; never secrets, tokens or personal data. Agents follow the same rule ([AGENTS.md](../AGENTS.md#working-rules)).
+- Log content rule for agents and code alike: [AGENTS.md](../AGENTS.md#working-rules).
 - Services expose health endpoints and emit counters/histograms for request rate, errors and latency.
 - Go logging and metrics: [`golang-observability`](../.agents/skills/golang-observability/SKILL.md).
 

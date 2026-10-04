@@ -5,7 +5,7 @@ Go-specific rules on top of `docs/CODING_STANDARDS.md`. The `golang-*` skills in
 ## Toolchain
 
 - Go version pinned in `mise.toml` and `go.mod`.
-- `golangci-lint` v2 with `.golangci.yml` (formatting via `gofumpt` + `goimports`, `gosec` for SAST, `depguard` for the layer rule below), `govulncheck`.
+- `golangci-lint` v2 with `.golangci.yml` (formatting via `gofumpt` + `goimports`, `gosec` for SAST, `depguard` for the layer rule below), `govulncheck`; the `test` recipe runs with `-race`.
 - `buf` for protobuf lint, breaking-change checks and code generation; `sqlc` for typed queries. Both run through `just`.
 
 ## Architecture: domain-driven design
