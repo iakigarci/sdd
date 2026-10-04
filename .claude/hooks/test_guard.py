@@ -15,7 +15,7 @@ from pathlib import Path
 from test_hooks import GUARD, git_repo, run_hook
 
 # Added with the early return: quoting and backslashes must not hide git or gh.
-EXTRA = [
+QUOTING_CASES = [
     ("force-quoted-letters", "feat/1-x", 'g"i"t push -f', "deny"),
     ("force-backslash-letters", "feat/1-x", "g\\it push -f", "deny"),
     ("allow-no-git-or-gh", "feat/1-x", "make push FORCE=1", "allow"),
@@ -76,7 +76,7 @@ CASES = [
 
 class Guard(unittest.TestCase):
     def test_cases(self) -> None:
-        for name, branch, command, want in CASES + EXTRA:
+        for name, branch, command, want in CASES + QUOTING_CASES:
             with self.subTest(case=name), tempfile.TemporaryDirectory() as tmp:
                 git_repo(Path(tmp), branch)
                 payload = {
