@@ -16,10 +16,10 @@ if [[ -z $children ]]; then
   exit 1
 fi
 
-open=$(awk -F'\t' '$2 == "open" {printf "  #%s %s\n", $1, $3}' <<<"$children")
-if [[ -n $open ]]; then
+open_children=$(awk -F'\t' '$2 == "open" {printf "  #%s %s\n", $1, $3}' <<<"$children")
+if [[ -n $open_children ]]; then
   echo "✗ #$parent has open child issues; close them first:" >&2
-  echo "$open" >&2
+  echo "$open_children" >&2
   exit 1
 fi
 
@@ -30,7 +30,9 @@ while IFS=$'\t' read -r child _ _; do
   [[ -n $prs ]] || echo "! #$child has no closing PR: its change is not in the epic diff" >&2
   while read -r pr; do
     [[ -n $pr ]] || continue
-    sha=$(gh pr view "$pr" --json mergeCommit --jq .mergeCommit.oid)
+    sha=$(gh pr view "$pr" --json mergeCommit,mergedAt --jq 'select(.mergedAt != null) | .mergeCommit.oid')
+    # A closing PR that was never merged has no squash commit to review.
+    [[ -n $sha ]] || { echo "! #$child is closed by unmerged PR #$pr: skipped" >&2; continue; }
     printf '%s\t%s\t%s\n' "$child" "$pr" "$sha"
   done <<<"$prs"
 done <<<"$children"
