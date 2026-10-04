@@ -1,4 +1,4 @@
-name: AGENTS.md size
+name: Agent instructions
 
 on:
   pull_request:
@@ -6,9 +6,9 @@ on:
 permissions:
   contents: read
 
+# Generated projects run these inside `just check`; the template repo has no
+# justfile, so it runs the scripts directly.
 jobs:
-  # Generated projects run this inside `just check`; the template repo has no
-  # justfile, so it runs the script directly.
   agents-md:
     if: vars.IS_TEMPLATE == 'true'
     runs-on: ubuntu-latest
@@ -17,3 +17,12 @@ jobs:
         with:
           persist-credentials: false
       - run: scripts/check-agents-md.sh 150
+
+  claude-md:
+    if: vars.IS_TEMPLATE == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - run: scripts/check-claude-md.sh
