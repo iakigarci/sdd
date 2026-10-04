@@ -30,6 +30,7 @@ The PR title follows [Conventional Commits](https://www.conventionalcommits.org/
 ## Agent instructions
 
 - `AGENTS.md` is loaded on every agent turn, so it holds only what every task needs, capped at 150 lines including its `@` imports (`scripts/check-agents-md.sh`, part of `just check`). Detail goes in `docs/` or a skill, reached by a one-line pointer.
+- `CLAUDE.md`, when present, imports `AGENTS.md` with a line holding only `@AGENTS.md` (or is a symlink to it), so Claude Code loads the same instructions as every other agent (`scripts/check-claude-md.sh`, part of `just check`).
 
 ## Security and dependency checks
 
