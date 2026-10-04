@@ -1,7 +1,6 @@
 ---
 name: code-review
 description: "Review the changes since a fixed point along two axes, Standards (the repo's coding standards) and Spec (the originating issue), as parallel named agents. Use when the user wants to review a branch, a PR, work-in-progress changes, or asks to \"review since X\"."
-
 ---
 
 Two-axis review of the diff between `HEAD` and a fixed point the user supplies:

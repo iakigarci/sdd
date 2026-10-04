@@ -1,7 +1,6 @@
 ---
 name: modern-python
 description: "Modern Python tooling (uv, ruff, ty). Use when creating projects, writing standalone scripts, or migrating from pip/Poetry/mypy/black."
-
 ---
 
 # Modern Python

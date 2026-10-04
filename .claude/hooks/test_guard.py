@@ -11,7 +11,9 @@ import json
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
+import guard
 from test_hooks import GUARD, git_repo, run_hook
 
 # Added with the early return: quoting and backslashes must not hide git or gh.
@@ -94,6 +96,11 @@ class Guard(unittest.TestCase):
                 self.assertEqual(out["hookEventName"], "PreToolUse")
                 self.assertEqual(out["permissionDecision"], "deny")
                 self.assertTrue(out["permissionDecisionReason"])
+
+    def test_command_without_git_or_gh_skips_parsing(self) -> None:
+        # The early return: the parser is never reached, so a parser fault cannot matter.
+        with mock.patch.object(guard, "simple_commands", side_effect=AssertionError("parsed")):
+            self.assertIsNone(guard.check("make push FORCE=1", "."))
 
     def test_non_bash_tool_passes(self) -> None:
         payload = {"hook_event_name": "PreToolUse", "tool_name": "Read", "tool_input": {}}
