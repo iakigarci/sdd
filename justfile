@@ -26,6 +26,7 @@ script-tests:
     .agents/skills/implement/scripts/model-assignment_test.sh
     .agents/skills/implement/scripts/workflow-tracks_test.sh
     scripts/check-branch-name_test.sh
+    scripts/dedup-rules_test.sh
     scripts/enforced-rules_test.sh
     scripts/epic-children_test.sh
     scripts/pr-metrics_test.sh

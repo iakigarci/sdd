@@ -6,7 +6,7 @@ A GitHub template for starting projects that all follow the same stack, standard
 
 1. **Use this template** on GitHub, then clone the new repo.
 2. Install [`mise`](https://mise.jdx.dev) and the [`gh`](https://cli.github.com) CLI (logged in). Every other tool is pinned per project in `mise.toml`.
-3. In your agent, run `/project-init`. It interviews you, picks the language (Go by default), fills `AGENTS.md` and `SPEC.md`, applies `templates/<language>/` and the release workflow for the project's shape, configures the GitHub repo (squash-only merges, ruleset on `main`), and delivers all of that as its first PR.
+3. In your agent, run `/project-init`. It interviews you, picks the language (Go by default), fills `AGENTS.md` and `SPEC.md`, applies `templates/<language>/` and the release workflow for the project's shape, configures the GitHub repo and its `main` ruleset ([rules](docs/CODING_STANDARDS.md#branches-and-pull-requests)), and delivers all of that as its first PR.
 4. Start each feature with `/grill-with-docs`.
 
 ### Release token
@@ -15,53 +15,35 @@ release-please opens its release PR with `GITHUB_TOKEN` by default, and GitHub d
 
 ## Git flow
 
-`main` accepts changes only by PR, and each PR lands as one commit: squash merge only, with the PR title as the commit subject and the PR description as its body. Linear history, green `check`, `pr-title` and `branch-name` jobs (`.github/rulesets/main.json`). The template repo's own gates are the root `justfile` (`just check`: `agents-md`, `claude-md`, `script-tests`, `secrets`, `workflows`), and its CI jobs run those recipes. Its ruleset (`.github/rulesets/template.json`) requires the `agents-md`, `claude-md`, `pr-title` and `branch-name` jobs instead of a `check` job. Rulesets need a public repo or GitHub Pro/Team; on a free private repo `main` stays unprotected and the flow rests on the Claude Code hooks and `AGENTS.md`. Agents branch, commit, push, open the PR and get CI green; you review and merge on GitHub.
+The rules are in [CODING_STANDARDS → Branches and pull requests](docs/CODING_STANDARDS.md#branches-and-pull-requests). This template's own gates are the root `justfile` (`just check`), run by its CI jobs. Its ruleset (`.github/rulesets/template.json`) requires the `agents-md`, `claude-md`, `pr-title` and `branch-name` jobs instead of a `check` job. Rulesets need a public repo or GitHub Pro/Team; on a free private repo `main` stays unprotected and the flow rests on the Claude Code hooks and `AGENTS.md`.
 
 ## Token reduction
 
-Three layers, all agent-agnostic:
+The rules are in [AGENTS.md → Token budget](AGENTS.md#token-budget). Setup for the tool-output layer, once per machine:
 
-| Layer | What | Setup |
-|---|---|---|
-| Output | `caveman` skill, `full` level for chat (`AGENTS.md` → Token budget). Code, commits, PRs, issues and docs stay normal prose. | Vendored in `.agents/skills/caveman`. `/caveman lite` or `/caveman off` to change. |
-| Tool output | [`rtk`](https://github.com/rtk-ai/rtk) compresses `git`, test, lint and build output before it reaches the context (60–90% on those commands). | Once per machine: `mise use -g rtk`, then `rtk init -g --hook-only --auto-patch` (Claude Code), `rtk init -g --codex`, `rtk init -g --agent cursor`, or `rtk init -g --gemini`. |
-| Always-loaded context | `AGENTS.md` kept short; skill descriptions trimmed to one line (~1k tokens for all 30 model-invoked skills); workflow skills are user-invoked, so they cost nothing until typed. | Built in. |
+- [`rtk`](https://github.com/rtk-ai/rtk): `mise use -g rtk`, then `rtk init -g --hook-only --auto-patch` (Claude Code), `rtk init -g --codex`, `rtk init -g --agent cursor`, or `rtk init -g --gemini`.
+- `caveman` is vendored in `.agents/skills/caveman`; `/caveman lite` or `/caveman off` changes its level.
+- Always-loaded context: skill descriptions are trimmed to one line (about 1k tokens for all 30 model-invoked skills), and workflow skills are user-invoked, so they cost nothing until typed.
 
 ## Workflow
 
-```
-/grill-with-docs   interview; writes GLOSSARY.md and docs/adr/ as decisions land
-/to-spec           conversation → spec as a GitHub issue
-/to-tickets        spec → tracer-bullet issues with blocking edges
-/implement         criteria + ASSUMP-# → TDD → `just check` → evidence table → /code-review → commit
-/code-review       Standards axis (Sonnet agent) + independent Spec axis (Opus agent, read-only), in parallel
-pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
-```
+The agent chain is in [AGENTS.md → Workflow](AGENTS.md#workflow). The tracks and the human checkpoint are in [docs/workflow.md](docs/workflow.md), and the step-by-step guide per scenario is [USAGE.md](USAGE.md).
 
 ## Layout
 
-| Path | What |
-|---|---|
-| `AGENTS.md` | Always-loaded agent instructions, kept short. `CLAUDE.md` imports it. |
-| `SPEC.md` | Product-level scope; feature specs are GitHub issues. |
-| `docs/CODING_STANDARDS.md`, `docs/standards/` | How code is written; read by `/code-review`. |
-| `docs/agents/` | Issue tracker and domain-doc conventions for the skills; `models.md` assigns each workflow step its model (Sonnet session default). |
-| `.agents/skills/` | Skills in the open `SKILL.md` format. `.claude/skills` is a symlink to it. |
-| `.claude/agents/`, `.claude/hooks/` | Claude Code reviewer agents for `/code-review` (Opus `spec-reviewer`, Sonnet `standards-reviewer`) and the read-only Bash guard they share. |
-| `templates/go`, `templates/python` | `mise.toml`, justfile, lint config, CI, dependabot, Dockerfile, gitignore per language (plus `.goreleaser.yaml` for Go CLIs). |
-| `templates/release/` | Release workflow per shape: container (GHCR), goreleaser, tag-only. |
-| `scripts/check-pr-title.sh` | Conventional Commit check for PR titles (CI). |
-| `scripts/check-branch-name.sh` | `<type>/<issue>-<slug>` branch-name check (CI, `branch-name.yml`). |
-| `justfile`, `mise.toml` | Template-level gates (`just check`) and the tools they pin (`just`, `gitleaks`, `zizmor`). Generated projects get their own from `templates/`. |
-| `scripts/check-agents-md.sh` | Keeps `AGENTS.md` (with its `@` imports) at 150 lines or fewer; part of `just check`. |
-| `.claude/settings.json`, `.claude/hooks/` | Claude Code hooks: deny force-push, push to `main` and PR merges; format the edited Go/Python file; on Stop, run `just fast` when code changed and send failures back to the agent. Guard rails; the `main` ruleset is the real block. Tests run in `hooks.yml`. |
-| `scripts/check-claude-md.sh` | Fails when `CLAUDE.md` exists without an `@AGENTS.md` import; part of `just check`. |
-| `lefthook.yml` | pre-commit fmt/lint, pre-push `just check`. |
-| `.github/` | PR template, PR-title and branch-name checks, security workflow (dependency review, CodeQL, weekly scans), `main` rulesets for projects (`main.json`) and this template (`template.json`). |
+- [`AGENTS.md`](AGENTS.md), [`CLAUDE.md`](CLAUDE.md): agent instructions ([rule](docs/CODING_STANDARDS.md#agent-instructions)).
+- [`SPEC.md`](SPEC.md): product scope ([rule](AGENTS.md#stack)).
+- [`docs/`](docs/): standards ([rule](docs/CODING_STANDARDS.md)), [workflow](docs/workflow.md), [agent config](docs/agents/).
+- [`.agents/skills/`](.agents/skills/): skills ([listing](.agents/skills/VENDORED.md)).
+- [`.claude/`](.claude/): reviewer agents, hooks ([rule](docs/CODING_STANDARDS.md#branches-and-pull-requests)).
+- [`templates/`](templates/): per-language project files.
+- [`scripts/`](scripts/), [`justfile`](justfile): gates ([rule](docs/CODING_STANDARDS.md)).
+- [`.github/`](.github/): PR template, CI, rulesets ([rule](docs/CODING_STANDARDS.md#branches-and-pull-requests)).
+- [`lefthook.yml`](lefthook.yml): local hooks.
 
 ## Security and dependency checks
 
-Listed in `docs/CODING_STANDARDS.md` → Security and dependency checks: `govulncheck`/`pip-audit`, `gosec`/ruff `S`, CodeQL, dependency review, `gitleaks`, `zizmor`, `trivy` on release images, SHA-pinned actions, SBOM and provenance. CodeQL and dependency review are free on public repos and need GitHub Code Security on private ones.
+The list is in [CODING_STANDARDS → Security and dependency checks](docs/CODING_STANDARDS.md#security-and-dependency-checks). CodeQL and dependency review are free on public repos and need GitHub Code Security on private ones.
 
 ## Skills
 

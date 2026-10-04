@@ -18,7 +18,7 @@ The PR title is a [Conventional Commit](https://www.conventionalcommits.org/) su
 - `.github/rulesets/main.json` protects `main`: PR only, squash merge only, linear history, and the CI jobs it lists must pass.
 - Branch names are `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`; `scripts/check-branch-name.sh` (CI job `branch-name`) checks them and lists the exempt bot branches.
 - One PR = one commit on `main`. Review feedback goes in as new commits on the branch. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.
-- The PR body follows the `pr` skill (`.github/pull_request_template.md` mirrors it), opens with `Closes #<n>` on its first line (then `Part of #<parent>` when the issue belongs to a larger feature, which links the parent without closing it), and becomes the commit message, so it describes the final change, not the review history.
+- The PR body follows the [`pr` skill](../.agents/skills/pr/SKILL.md) template ([`.github/pull_request_template.md`](../.github/pull_request_template.md) mirrors it), opens with `Closes #<n>` on its first line (then `Part of #<parent>` when the issue belongs to a larger feature, which links the parent without closing it), and becomes the commit message, so it describes the final change, not the review history.
 - Aim for a diff a reviewer can hold in their head (roughly under 400 changed lines, excluding generated files).
 
 ## CI/CD
@@ -50,18 +50,21 @@ A finding is fixed, or suppressed inline with the reason (`//nolint:gosec // rea
 ## Tests
 
 - Test behaviour through the public interface of a module, not its internals.
-- Every acceptance criterion and every `ASSUMP-#` maps to a test.
+- Every acceptance criterion and every `ASSUMP-#` maps to a test; `/implement` step 5 records the mapping ([skill](../.agents/skills/implement/SKILL.md)).
 - Coverage threshold is enforced by `just check` (default 80%), measured across packages. Left out: Go entry points under `cmd/` (they only wire dependencies), generated code, and infrastructure adapters (`adapters/postgres|nats|grpc`, `platform/postgres|nats`), which the integration tests cover.
+- Go test mechanics: [`golang-testing`](../.agents/skills/golang-testing/SKILL.md).
 
 ## Errors
 
 - Return errors to the caller with context; crash only on programmer errors at startup.
 - Handle each error once: either log it or return it.
+- Go wrapping and sentinel errors: [`golang-error-handling`](../.agents/skills/golang-error-handling/SKILL.md).
 
 ## Logging and observability
 
-- Structured logs (key/value). Log IDs and hashes; never secrets, tokens or personal data.
+- Structured logs (key/value). Log IDs and hashes; never secrets, tokens or personal data. Agents follow the same rule ([AGENTS.md](../AGENTS.md#working-rules)).
 - Services expose health endpoints and emit counters/histograms for request rate, errors and latency.
+- Go logging and metrics: [`golang-observability`](../.agents/skills/golang-observability/SKILL.md).
 
 ## Dependencies
 
@@ -80,5 +83,5 @@ A finding is fixed, or suppressed inline with the reason (`//nolint:gosec // rea
 
 ## Review
 
-- Findings carry a severity: **High** (bug, data loss, security), **Medium** (maintainability, missing test), **Low** (nit).
+- Findings carry a severity: **High** (bug, data loss, security), **Medium** (maintainability, missing test), **Low** (nit). The [`standards-reviewer`](../.claude/agents/standards-reviewer.md) applies it, and [`/code-review`](../.agents/skills/code-review/SKILL.md) runs it.
 - Every review states its security findings, or that it saw none.

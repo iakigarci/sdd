@@ -1,6 +1,6 @@
 # Go standards
 
-Go-specific rules on top of `docs/CODING_STANDARDS.md`. The `golang-*` skills in `.agents/skills/` carry the detail; this file holds the choices they leave open, and it wins where they disagree.
+Go-specific rules on top of `docs/CODING_STANDARDS.md`. The `golang-*` skills in `.agents/skills/` carry the detail; this file holds the choices they leave open, and it wins where they disagree. General Go rules for errors, logging, naming, testing, context, concurrency and interfaces are in the skills [`golang-error-handling`](../../.agents/skills/golang-error-handling/SKILL.md), [`golang-observability`](../../.agents/skills/golang-observability/SKILL.md), [`golang-naming`](../../.agents/skills/golang-naming/SKILL.md), [`golang-testing`](../../.agents/skills/golang-testing/SKILL.md), [`golang-context`](../../.agents/skills/golang-context/SKILL.md), [`golang-concurrency`](../../.agents/skills/golang-concurrency/SKILL.md) and [`golang-structs-interfaces`](../../.agents/skills/golang-structs-interfaces/SKILL.md); this file does not repeat them.
 
 ## Toolchain
 
@@ -72,18 +72,15 @@ db/queries/                    sqlc query files
 
 ## Code
 
-- `context.Context` is the first parameter of anything that does I/O or blocks; never stored in a struct.
-- Wrap errors with `fmt.Errorf("doing x: %w", err)`; inspect with `errors.Is`/`errors.As`; sentinel errors named `ErrX`. Domain errors are typed so adapters can map them.
-- Every goroutine has an owner that cancels it and waits for it (`errgroup`, `sync.WaitGroup`).
-- Outside repository ports: accept interfaces, return concrete types, define interfaces where they are consumed.
-- `log/slog` for logging, injected rather than global.
+- Domain errors are typed so adapters can map them to HTTP statuses and gRPC codes (`golang-error-handling` covers wrapping).
+- Sentinel errors are named `ErrX`. Exported identifiers keep backward compatibility ([rule](../CODING_STANDARDS.md#compatibility)).
+- Logging is `log/slog`, injected rather than global (`golang-observability`).
 - Dependencies are injected by hand: constructors take what they need, and `cmd/<service>/main.go` wires them. No DI library or container.
-- Configuration from environment variables into one typed struct, validated at startup in `internal/platform`.
-- Exported identifiers keep backward compatibility.
+- Configuration is one typed struct, loaded from the environment and validated at startup in `internal/platform` ([rule](../CODING_STANDARDS.md#configuration-and-secrets)).
 
 ## Default libraries
 
-Standard library first. Anything outside this table is justified in the PR and added here; libraries the `golang-*` skills suggest (`samber/oops`, `samber/lo`, …) count as outside.
+Dependencies follow [CODING_STANDARDS → Dependencies](../CODING_STANDARDS.md#dependencies). Anything outside this table is justified in the PR and added here; libraries the `golang-*` skills suggest (`samber/oops`, `samber/lo`, …) count as outside.
 
 | Need | Default |
 |---|---|
@@ -94,7 +91,7 @@ Standard library first. Anything outside this table is justified in the PR and a
 | Integration tests | `github.com/testcontainers/testcontainers-go` (postgres, nats modules) |
 | Logging | `log/slog` |
 | Concurrency | `golang.org/x/sync/errgroup` |
-| Tests | `testing` with table-driven subtests |
+| Tests | `testing` (mechanics in `golang-testing`) |
 
 ## Tests
 
@@ -102,5 +99,4 @@ Standard library first. Anything outside this table is justified in the PR and a
 - `app`: unit tests with in-memory fakes of the ports.
 - `adapters`: integration tests against real Postgres and NATS via testcontainers, behind `//go:build integration`, run by `just test-integration` and the `integration` CI job. Container helpers (start, migrate, connect) live once in `internal/platform/testinfra`, behind the same build tag.
 - HTTP handlers through `httptest` against the Gin engine; gRPC through `bufconn`.
-- Table-driven tests with `t.Run`, `t.Parallel()` where safe, helpers call `t.Helper()`.
 - Benchmarks (`BenchmarkX`) for any criterion that states a latency or throughput target.

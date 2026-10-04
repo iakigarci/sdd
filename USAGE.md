@@ -86,7 +86,7 @@ After every child ticket of a parent issue is merged.
 | Refactor | `/model opus`, `/improve-codebase-architecture` → pick a candidate → treat it as a small or big feature |
 | Docs, CI or chore | Same as a small fix; the PR title type is `docs:`, `ci:` or `chore:` |
 
-A small change is one that fits a single PR a reviewer can hold in their head (roughly under 400 changed lines). Anything larger is a big feature.
+A small change is one that fits a single PR a reviewer can hold in their head (size rule: [CODING_STANDARDS](docs/CODING_STANDARDS.md#branches-and-pull-requests)). Anything larger is a big feature.
 
 ### Batches: a list of fixes or features
 
@@ -126,7 +126,7 @@ For 2–3 unblocked tickets that touch separate areas.
 
 1. `git switch main && git pull` in the main checkout.
 2. One terminal per ticket: `claude -w t<n>` (add `--tmux` for panes), then `/implement #<n>` in each.
-3. Merge the PRs one at a time. After each merge, update the other branches with GitHub's "Update branch" or by merging `main` in. Never force-push or base a branch on another open PR.
+3. Merge the PRs one at a time. After each merge, bring the other branches up to date ([rule](docs/CODING_STANDARDS.md#branches-and-pull-requests)). Never force-push or base a branch on another open PR.
 
 ## What the guard rails do
 
@@ -142,14 +142,16 @@ You will see these; they are working as intended.
 
 ## Cheat sheet
 
-| Command | Model | When |
-|---|---|---|
-| `/grill-with-docs` | Opus | Unclear idea, design or domain question |
-| `/to-spec` | Opus after a grill, else Sonnet | Turn the conversation into an issue |
-| `/to-tickets #<n>` | Opus | Break a big feature into child issues |
-| `/implement #<n>` | Sonnet (Opus for hard tickets) | Ship one approved ticket |
-| `/code-review <ref>` | runs its own agents | Review any branch by hand; `/implement` already runs it |
-| `/diagnosing-bugs` | Opus | Bug with unknown cause, perf regression |
-| `/close-epic <n>` | Opus | All children of a parent are merged |
-| `/improve-codebase-architecture` | Opus | Every few days |
-| `/handoff` | Sonnet | Continue in a fresh session |
+| Command | When |
+|---|---|
+| `/grill-with-docs` | Unclear idea, design or domain question |
+| `/to-spec` | Turn the conversation into an issue |
+| `/to-tickets #<n>` | Break a big feature into child issues |
+| `/implement #<n>` | Ship one approved ticket |
+| `/code-review <ref>` | Review any branch by hand; `/implement` already runs it |
+| `/diagnosing-bugs` | Bug with unknown cause, perf regression |
+| `/close-epic <n>` | All children of a parent are merged |
+| `/improve-codebase-architecture` | Every few days |
+| `/handoff` | Continue in a fresh session |
+
+The model each command runs on is in [docs/agents/models.md](docs/agents/models.md); this guide does not repeat that table.
