@@ -4,7 +4,7 @@ Each workflow step runs on the model below. Judgement-heavy steps (interviews, t
 
 | Model | Steps |
 |---|---|
-| Opus | `/grill-with-docs`, `/to-tickets`, `/diagnosing-bugs`, `/improve-codebase-architecture`, spec review (`spec-reviewer` agent), hotfix diagnosis |
+| Opus | `/grill-with-docs`, `/to-tickets`, `/diagnosing-bugs`, `/improve-codebase-architecture`, `/close-epic`, spec review (`spec-reviewer` agent), hotfix diagnosis |
 | Opus/Sonnet | `/to-spec`: the model of the session it follows, Opus straight after a grill |
 | Sonnet | `/implement`, `/tdd`, standards review (`standards-reviewer` agent), `/handoff`, hotfix fix |
 | Haiku | PR body (`pr` skill, forked) |
@@ -13,7 +13,7 @@ Each workflow step runs on the model below. Judgement-heavy steps (interviews, t
 
 - **Session default**: `.claude/settings.json` sets `"model": "sonnet"`. Your own `.claude/settings.local.json` or `/model` overrides it.
 - **Single-turn skills** pin their model in frontmatter: `handoff` (`sonnet`), `to-spec` (`inherit`).
-- **Multi-turn skills** cannot be pinned and open with "Run under `/model opus`": `grill-with-docs`, `to-tickets` (it quizzes you until you approve the breakdown), `diagnosing-bugs`, `improve-codebase-architecture`. Switch back with `/model sonnet` afterwards.
+- **Multi-turn skills** cannot be pinned and open with "Run under `/model opus`": `grill-with-docs`, `to-tickets` (it quizzes you until you approve the breakdown), `diagnosing-bugs`, `improve-codebase-architecture`, `close-epic` (it stops for your confirmation before writing). Switch back with `/model sonnet` afterwards.
 - **Reviewer agents** pin their model in `.claude/agents/`: `spec-reviewer` (`opus`), `standards-reviewer` (`sonnet`).
 - **PR body**: the `pr` skill runs as a forked Haiku agent (`context: fork`, `model: haiku`) and returns the title and body as text; `/implement` opens the PR itself.
 

@@ -24,6 +24,7 @@ Several tickets under one parent.
 3. The parent issue states how it ships: "behind a flag", or "hold the release PR until the last ticket lands".
 4. You add `ready-for-agent` to each child you approve.
 5. `/implement` each child. Unblocked tickets in separate areas may run in parallel (see below).
+6. `/close-epic` on the parent once every child is closed: independent spec review over the epic, permanent decisions written back, parent closed with a summary.
 
 ## Hotfix
 
@@ -40,6 +41,10 @@ For a production regression.
 - Each runs in its own worktree session, branched from a fresh `main`.
 - Merge them one at a time. Every branch after the first merges `main` before its PR is ready.
 - No stacked PRs: no branch is based on another open PR's branch.
+
+## Metrics
+
+After each merge, `scripts/pr-metrics.sh <pr> --post` comments a metrics record on the closed issue: first-push CI, review findings raised and acted on, later reverts or hotfixes. Review minutes and tokens/cost are typed in on a terminal and left blank otherwise. Every 20 records, `scripts/pr-metrics.sh --summary` proposes steps to cut.
 
 ## Specs
 
