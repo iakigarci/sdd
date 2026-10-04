@@ -11,7 +11,7 @@ grilling, domain-modeling, grill-with-docs, setup-matt-pocock-skills, to-spec, t
 Local changes:
 
 - `implement`: acceptance-criteria restatement, `ASSUMP-#`, pre-mortem, criteria → test evidence table, `just check` gate, review against `main`; ships as a PR that is squash-merged (branch commits free-form).
-- `pr`: squash-merge framing (title = commit subject, body = commit message), Conventional Commit title, `Changes` bullet section, evidence table, `Closes #`.
+- `pr`: squash-merge framing (title = commit subject, body = commit message), Conventional Commit title, `Changes` bullet section, evidence table; the body opens with `Closes #` as its first line, then `Part of #` for a parent issue.
 - `setup-matt-pocock-skills`: writes the Agent skills block to `AGENTS.md` (`CLAUDE.md` only imports it).
 - `to-spec`, `to-tickets`: apply `ready-for-agent` only when `docs/agents/triage-labels.md` exists.
 - `code-review`: standards sources include `docs/standards/` and ADRs; findings carry severity and a Security line; sub-agent briefs ask for findings only instead of a word cap.

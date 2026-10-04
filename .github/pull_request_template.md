@@ -1,4 +1,5 @@
-<!-- Title: Conventional Commit, e.g. feat(billing): add invoice export -->
+Closes #<issue>
+Part of #<parent>
 
 ## Changes
 
@@ -22,4 +23,4 @@
 **Door:** <one-way or two-way>
 **Blast Radius:** <one word>
 
-Closes #<issue>
+<!-- Title: Conventional Commit, e.g. feat(billing): add invoice export. Delete the "Part of" line unless the issue has a parent. -->
