@@ -59,9 +59,9 @@ Iterate until the user approves the breakdown.
 
 ### 5. Publish the tickets to the configured tracker
 
-Publish the approved tickets. **How** depends on the tracker `/setup-matt-pocock-skills` configured; the tickets are the same either way, only the shape of the blocking edges changes:
+Publish the approved tickets to the tracker in `docs/agents/issue-tracker.md`, one issue per ticket:
 
-- **The issue tracker** (GitHub, Linear, …) → publish one issue per ticket in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Do not apply `ready-for-agent`: the user adds it after reading each ticket, and `/implement` refuses a ticket without it (`docs/workflow.md`, Human checkpoint).
+- Publish in dependency order (blockers first) so each ticket's blocking edges can reference real identifiers. Use the platform's native blocking / sub-issue relationship where it has one; otherwise set each ticket's "Blocked by" to the blocking issues. Do not apply `ready-for-agent`: the user adds it after reading each ticket, and `/implement` refuses a ticket without it (`docs/workflow.md`, Human checkpoint).
 
 Work the **frontier**: any ticket whose blockers are all done. For a purely linear chain that means top to bottom.
 
@@ -89,4 +89,4 @@ The end-to-end behaviour this ticket makes work, from the user's perspective, no
 
 </issue-template>
 
-In the issue form, avoid specific file paths or code snippets: they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
+Avoid specific file paths or code snippets: they go stale fast. Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.

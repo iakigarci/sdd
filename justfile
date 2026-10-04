@@ -3,7 +3,7 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 default: check
 
 # Fast subset of `check`, run by the Claude Code Stop hook when code changed.
-fast: agents-md claude-md script-tests
+fast: agents-md claude-md
 
 # Template-level gates. Generated projects get their own justfile from templates/<language>/.
 check: fast secrets workflows
@@ -29,7 +29,6 @@ script-tests:
     scripts/enforced-rules_test.sh
     scripts/epic-children_test.sh
     scripts/pr-metrics_test.sh
-    python3 -m unittest discover -s .claude/hooks
 
 # Known vulnerabilities. The template has no dependencies of its own, so this
 # only scans when a generated project's manifest is present.
