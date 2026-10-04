@@ -74,7 +74,8 @@ class Settings(unittest.TestCase):
         }
         self.assertIn("guard.py", commands[("PreToolUse", "Bash")])
         self.assertIn("format.py", commands[("PostToolUse", "Edit|MultiEdit|Write")])
-        self.assertIn("Bash(gh pr merge *)", settings["permissions"]["deny"])
+        for rule in ("Bash(gh pr merge)", "Bash(gh pr merge *)"):
+            self.assertIn(rule, settings["permissions"]["deny"])
 
 
 class Format(unittest.TestCase):
@@ -156,6 +157,7 @@ class Format(unittest.TestCase):
 
     def test_missing_formatter_never_blocks(self) -> None:
         (self.project / "justfile").write_text("")
+        (self.project / "main.go").write_text("x\n")
         env = {**self.env, "PATH": str(self.root / "empty")}
         payload = {"tool_name": "Edit", "tool_input": {"file_path": str(self.project / "main.go")}}
         result = run_hook(FORMAT, payload, env)

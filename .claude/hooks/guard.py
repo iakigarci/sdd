@@ -36,10 +36,12 @@ SHELLS = {"bash", "sh", "zsh"}
 # git options that take the next word as their value.
 GIT_VALUE_OPTS = {"-C", "-c", "--git-dir", "--work-tree", "--namespace", "--config-env"}
 PUSH_VALUE_OPTS = {"-o", "--push-option", "--repo", "--receive-pack", "--exec"}
-# GitHub API calls that merge: REST pulls/{n}/merge and /merges, GraphQL mutations.
-API_MERGE = re.compile(
-    r"/pulls/[^/\s]+/merge\b|/merges\b|\bmergePullRequest\b|\benablePullRequestAutoMerge\b"
-)
+# GitHub API calls that merge: REST pulls/{n}/merge and /merges (unless a read-only
+# GET), and the GraphQL merge mutations.
+REST_MERGE = re.compile(r"/pulls/[^/\s]+/merge\b|/merges\b")
+GRAPHQL_MERGE = re.compile(r"\bmergePullRequest\b|\benablePullRequestAutoMerge\b")
+# `gh api` sends a POST when it has fields or input and no explicit method.
+API_BODY_OPTS = ("-f", "-F", "--field", "--raw-field", "--input")
 
 
 def main() -> int:
@@ -128,7 +130,7 @@ def check_push(args: list[str], cwd: str) -> str | None:
         refspecs = ["HEAD"]
     for ref in refspecs:
         target = ref.split(":", 1)[1] if ":" in ref else ref
-        if target == "HEAD":
+        if target in ("HEAD", "@"):
             target = current_branch(cwd)
         if target.removeprefix("refs/heads/") == MAIN:
             return TO_MAIN
@@ -138,9 +140,25 @@ def check_push(args: list[str], cwd: str) -> str | None:
 def check_gh(args: list[str]) -> str | None:
     if args[:2] == ["pr", "merge"]:
         return MERGE
-    if args[:1] == ["api"] and any(API_MERGE.search(arg) for arg in args[1:]):
+    if args[:1] != ["api"]:
+        return None
+    if any(GRAPHQL_MERGE.search(arg) for arg in args[1:]):
+        return MERGE
+    if any(REST_MERGE.search(arg) for arg in args[1:]) and api_method(args[1:]) != "GET":
         return MERGE
     return None
+
+
+def api_method(args: list[str]) -> str:
+    for i, arg in enumerate(args):
+        if arg in ("-X", "--method") and i + 1 < len(args):
+            return args[i + 1].upper()
+        if arg.startswith("--method="):
+            return arg.split("=", 1)[1].upper()
+        if arg.startswith("-X") and len(arg) > 2:
+            return arg[2:].upper()
+    has_body = any(arg.split("=", 1)[0] in API_BODY_OPTS for arg in args)
+    return "POST" if has_body else "GET"
 
 
 def current_branch(cwd: str) -> str:
