@@ -53,7 +53,7 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 | `scripts/check-agents-md.sh` | Keeps `AGENTS.md` (with its `@` imports) at 150 lines or fewer; part of `just check`. |
 | `scripts/check-claude-md.sh` | Fails when `CLAUDE.md` exists without an `@AGENTS.md` import; part of `just check`. |
 | `lefthook.yml` | pre-commit fmt/lint, pre-push `just check`. |
-| `.github/` | PR template, PR-title check, security workflow (dependency review, CodeQL, weekly scans), `main` ruleset. |
+| `.github/` | PR template, PR-title check, security workflow (dependency review, CodeQL, weekly scans), `main` rulesets for projects (`main.json`) and this template (`template.json`). |
 
 ## Security and dependency checks
 

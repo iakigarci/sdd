@@ -7,7 +7,9 @@ permissions:
   contents: read
 
 # Generated projects run these inside `just check`; the template repo has no
-# justfile, so it runs the scripts directly.
+# justfile, so it runs the scripts directly. The template ruleset
+# (.github/rulesets/template.json) requires both jobs, and a skipped job counts
+# as passing: IS_TEMPLATE must be `true` on the template repo.
 jobs:
   agents-md:
     if: vars.IS_TEMPLATE == 'true'
