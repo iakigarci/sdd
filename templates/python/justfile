@@ -29,6 +29,10 @@ vuln:
 agents-md:
     scripts/check-agents-md.sh 150
 
+# Claude Code loads AGENTS.md only through CLAUDE.md's `@AGENTS.md` import.
+claude-md:
+    scripts/check-claude-md.sh
+
 # Fixture tests for the reviewer agents' Bash guard and independence check.
 script-tests:
     .claude/hooks/review-bash-guard_test.sh
@@ -46,4 +50,4 @@ workflows:
 tidy-check:
     uv lock --check
 
-check: agents-md script-tests fmt-check lint cover vuln secrets workflows tidy-check
+check: agents-md claude-md script-tests fmt-check lint cover vuln secrets workflows tidy-check

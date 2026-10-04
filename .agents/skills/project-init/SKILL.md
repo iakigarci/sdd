@@ -41,7 +41,7 @@ Work on a `chore/project-init` branch.
    - Go CLI → `templates/release/goreleaser.yml`; keep `.goreleaser.yaml`.
    - library → `templates/release/tag-only.yml`.
    Delete the delivery files the shape does not use, then delete `templates/`.
-3. Delete the unused file in `docs/standards/`.
+3. Delete the unused file in `docs/standards/`, and `.github/rulesets/template.json` (the template repo's own ruleset).
 4. Trim to what the project uses:
    - No gRPC → no `buf.yaml`. gRPC → `buf config init` under `api/proto`, plus `buf.gen.yaml` for Go output.
    - No Postgres or NATS → delete the `integration` job in `ci.yml` and the `test-integration` recipe.
@@ -53,6 +53,7 @@ Work on a `chore/project-init` branch.
    - Python: `uv init --package <name>`, merge `pyproject.tools.toml` into `pyproject.toml` and delete it, `uv add --dev ruff ty pytest pytest-cov`, tests under `tests/`.
 8. Replace `README.md` with a project README: pitch, prerequisites (`mise install`, `lefthook install`), the `just` commands, links to `SPEC.md` and `AGENTS.md`, and the `RELEASE_PLEASE_TOKEN` note from the template README.
 9. Delete `.agents/skills/project-init/`: it is single-use.
+10. Keep `.claude/` and `.github/workflows/hooks.yml` as they are: the guard hook is already active, and the format hook starts working once the justfile exists.
 
 ## 4. Configure GitHub
 
@@ -71,7 +72,7 @@ Rulesets need a public repo or GitHub Pro/Team. On a private repo without them t
 ## 5. Verify and ship
 
 1. `grep -rnE '\{\{[A-Z_]+\}\}' --exclude-dir=.git --exclude-dir=.agents .` prints nothing.
-2. `lefthook install`, then `just check` passes.
+2. `lefthook install`, then `just check` passes, and `python3 -m unittest discover -s .claude/hooks` passes.
 3. Commit (`chore: initialise project from template`), push, open the PR with the `pr` skill, and `gh pr checks --watch` until `check` and `pr-title` are green.
 
 A missing tool is reported with its install command; the gate is never skipped silently. Done when CI is green on the PR: report its URL for the user to review and squash-merge, then suggest `/grill-with-docs` for the first feature.

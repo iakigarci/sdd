@@ -1,0 +1,16 @@
+{
+  "branch": "main",
+  "want": "allow",
+  "input": {
+    "session_id": "fixture",
+    "transcript_path": "/dev/null",
+    "cwd": "",
+    "permission_mode": "default",
+    "hook_event_name": "PreToolUse",
+    "tool_name": "Bash",
+    "tool_input": {
+      "command": "git fetch origin main && git switch -c feat/2-y origin/main",
+      "description": "allow-git-fetch"
+    }
+  }
+}

@@ -15,6 +15,7 @@ The PR title follows [Conventional Commits](https://www.conventionalcommits.org/
 
 ## Branches and pull requests
 
+- Claude Code hooks (`.claude/settings.json`) deny force-pushes, pushes to `main` and PR merges, so an agent cannot skip these rules; they are guard rails, and on a free private repo without a ruleset the only ones.
 - `main` is protected (`.github/rulesets/main.json`): changes arrive only by PR, with linear history, required `check` and `pr-title` jobs, and **squash merge** as the only merge method (commit title = PR title, commit message = PR description).
 - Branch names: `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
 - One PR = one commit on `main`. Review feedback goes in as new commits on the branch; nothing is force-pushed. Keep the branch current with GitHub's "Update branch" or by merging `main` in: the squash flattens it either way.
@@ -30,6 +31,7 @@ The PR title follows [Conventional Commits](https://www.conventionalcommits.org/
 ## Agent instructions
 
 - `AGENTS.md` is loaded on every agent turn, so it holds only what every task needs, capped at 150 lines including its `@` imports (`scripts/check-agents-md.sh`, part of `just check`). Detail goes in `docs/` or a skill, reached by a one-line pointer.
+- `CLAUDE.md`, when present, imports `AGENTS.md` with a line holding only `@AGENTS.md` (or is a symlink to it), so Claude Code loads the same instructions as every other agent (`scripts/check-claude-md.sh`, part of `just check`).
 
 ## Security and dependency checks
 
