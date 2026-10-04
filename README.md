@@ -44,6 +44,7 @@ pr skill           PR body: Changes bullets, Summary, Evidence, Merge Danger
 |---|---|
 | `AGENTS.md` | Always-loaded agent instructions, kept short. `CLAUDE.md` imports it. |
 | `SPEC.md` | Product-level scope; feature specs are GitHub issues. |
+| `USAGE.md` | Step-by-step guide per scenario: small fix, feature, batches, big feature, hotfix. |
 | `docs/CODING_STANDARDS.md`, `docs/standards/` | How code is written; read by `/code-review`. |
 | `docs/agents/` | Issue tracker and domain-doc conventions for the skills; `models.md` assigns each workflow step its model (Sonnet session default). |
 | `.agents/skills/` | Skills in the open `SKILL.md` format. `.claude/skills` is a symlink to it. |
