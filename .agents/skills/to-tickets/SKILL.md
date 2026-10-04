@@ -76,7 +76,7 @@ Do NOT close or modify any parent issue.
 
 **Blocked by:** the numbers/titles of the tickets that gate this one, or "None (can start immediately)".
 
-**Status:** needs-review (the user sets `ready-for-agent` after reading)
+**Status:** needs-triage (the user sets `ready-for-agent` after reading)
 
 - [ ] Acceptance criterion 1
 - [ ] Acceptance criterion 2

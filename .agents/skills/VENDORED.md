@@ -13,7 +13,7 @@ Local changes:
 - `implement`: a ticket gate on the `ready-for-agent` label, test seams listed beside `ASSUMP-#` (pause only at public API or persistence boundaries), acceptance-criteria restatement, `ASSUMP-#`, pre-mortem, criteria → test evidence table, `just check` gate, review against `main`; ships as a PR that is squash-merged (branch commits free-form); pre-mortem draws its security failures from the spec's Threat Model; review adds `/security-review` (language security skill as fallback, a manual pass for Python) when the diff touches a sensitive area, unfixed findings going into Merge Danger.
 - `pr`: squash-merge framing (title = commit subject, body = commit message), Conventional Commit title, `Changes` bullet section, evidence table; the body opens with `Closes #` as its first line, then `Part of #` for a parent issue.
 - `setup-matt-pocock-skills`: writes the Agent skills block to `AGENTS.md` (`CLAUDE.md` only imports it).
-- `to-spec`: apply `ready-for-agent` only when `docs/agents/triage-labels.md` exists.
+- `to-spec`: never applies `ready-for-agent`; the user adds it after reading (`docs/workflow.md`).
 - `to-tickets`: never applies `ready-for-agent`; the user adds it after reading (`docs/workflow.md`).
 - `to-spec`: template gains a Threat Model section (trust boundaries, assets, one STRIDE pass).
 - `code-review`: standards sources include `docs/standards/` and ADRs; findings carry severity and a Security line; sub-agent briefs ask for findings only instead of a word cap.

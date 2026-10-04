@@ -38,7 +38,7 @@ For a production regression.
 
 - Run 2 or 3 unblocked tickets at once, only when they touch separate areas.
 - Each runs in its own worktree session, branched from a fresh `main`.
-- Merge them one at a time. A branch that lands second merges `main` before its PR is ready.
+- Merge them one at a time. Every branch after the first merges `main` before its PR is ready.
 - No stacked PRs: no branch is based on another open PR's branch.
 
 ## Specs

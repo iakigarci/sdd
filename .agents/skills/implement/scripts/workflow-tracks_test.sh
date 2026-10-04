@@ -31,6 +31,7 @@ if [[ -f $doc ]]; then
   has "$doc" 'worktree session'
   has "$doc" 'fresh `main`'
   has "$doc" 'one at a time'
+  has "$doc" 'Every branch after the first merges `main`'
   has "$doc" 'No stacked PRs'
   # The checkpoint is the label, and /implement refuses without it.
   has "$doc" '`ready-for-agent`'
@@ -60,6 +61,7 @@ if grep -qE 'apply its `ready-for-agent`' "$totickets"; then
   echo "✗ to-tickets: still applies ready-for-agent on publish"; fail=1
 fi
 has "$totickets" 'Do not apply `ready-for-agent`'
+has "$root/.agents/skills/to-spec/SKILL.md" 'Do not apply `ready-for-agent`'
 
 # 7. AGENTS.md stays within its line gate.
 "$root/scripts/check-agents-md.sh" 150 >/dev/null || { echo "✗ AGENTS.md over the line gate"; fail=1; }
