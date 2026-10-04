@@ -37,6 +37,7 @@ Every change reaches `main` as a PR the user reviews; hooks, CI and the `main` r
 
 `/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` → `/code-review` → PR body via the `pr` skill.
 `/diagnosing-bugs` for hard bugs, `/improve-codebase-architecture` every few days, `/handoff` to continue in a fresh session.
+The small-feature, big-feature and hotfix tracks, and the human checkpoint, are in `docs/workflow.md`.
 
 ## Agent skills
 
