@@ -57,6 +57,14 @@ Do NOT include specific file paths or code snippets. They may end up being outda
 
 Exception: if a prototype produced a snippet that encodes a decision more precisely than prose can (state machine, reducer, schema, type shape), inline it within the relevant decision and note briefly that it came from a prototype. Trim to the decision-rich parts, not a working demo, just the important bits.
 
+## Threat Model
+
+A short security pass over the feature, one line per item.
+
+- **Trust boundaries**: where data or control crosses into more-trusted code (user input, network, other services, files, environment).
+- **Assets**: what an attacker wants (credentials, personal data, money, availability).
+- **STRIDE**: one line each for Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege: the threat and its mitigation, or `n/a`.
+
 ## Testing Decisions
 
 A list of testing decisions that were made. Include:
