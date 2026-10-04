@@ -36,12 +36,15 @@ agents-md:
 claude-md:
     scripts/check-claude-md.sh
 
-# Fixture tests for the reviewer agents' Bash guard and independence check.
+# Tests for the reviewer agents' guards, the PR template and the PR checks.
 script-tests:
     .claude/hooks/review-bash-guard_test.sh
     .agents/skills/code-review/scripts/check-independence_test.sh
     .agents/skills/code-review/scripts/reviewer-agents_test.sh
     .agents/skills/pr/scripts/pr-template_test.sh
+    scripts/check-branch-name_test.sh
+    scripts/check-pr-size_test.sh
+    scripts/enforced-rules_test.sh
 
 # Secrets committed anywhere in git history.
 secrets:

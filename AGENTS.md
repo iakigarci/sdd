@@ -10,12 +10,7 @@
 
 ## Commands
 
-Every gate runs through `just`, locally and in CI:
-
-- `just fmt`: format
-- `just lint`: linters and static analysis
-- `just test`: tests with the race detector
-- `just check`: the full gate CI runs; its steps are the `check` recipe in `justfile`. Done means `just check` passed in this session.
+Every gate is a `just` recipe (`justfile`), run the same locally and in CI. Done means `just check` passed in this session.
 
 ## Token budget
 
@@ -32,15 +27,11 @@ Every gate runs through `just`, locally and in CI:
 
 ## Git and pull requests
 
-Every change reaches `main` through a GitHub PR that the user reviews and squash-merges: one PR becomes one commit, whose subject is the PR title and whose body is the PR description. Details in `docs/CODING_STANDARDS.md`.
+Every change reaches `main` as a PR the user reviews; hooks, CI and the `main` ruleset enforce the rest (`docs/CODING_STANDARDS.md` → Branches and pull requests).
 
-1. Branch from an up-to-date `main`: `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
-2. Commit as often as useful; branch commits are squashed away.
-3. Push the branch and open the PR with `gh pr create`: a Conventional Commit title, body from the `pr` skill.
-4. Watch CI (`gh pr checks --watch`) and fix until green.
-5. Hand the user the PR URL. Merging is the user's step, on GitHub.
-
-Address review feedback with new commits on the same branch; force-pushing is never needed.
+1. Branch from an up-to-date `main` as `<type>/<issue>-<slug>`, e.g. `feat/42-invoice-export`.
+2. Push, open the PR with `gh pr create`, body from the `pr` skill.
+3. Get CI green (`gh pr checks --watch`), then hand the user the PR URL.
 
 ## Workflow
 

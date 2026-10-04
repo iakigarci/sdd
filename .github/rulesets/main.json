@@ -43,6 +43,9 @@
           },
           {
             "context": "pr-title"
+          },
+          {
+            "context": "branch-name"
           }
         ]
       }
