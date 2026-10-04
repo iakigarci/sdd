@@ -33,7 +33,15 @@ expect() {
 
 closed='[{"number":14,"state":"closed","title":"a"},{"number":19,"state":"closed","title":"b"}]'
 expect pass "all children closed" "$closed" "abc123"
-# expect <want> <name> <subs> <closing-prs-json>: a child with no closing PR warns.
+export FAKE_SUBS=$closed FAKE_ISSUE_PRS='{"closedByPullRequestsReferences":[{"number":21}]}' FAKE_MERGE_SHA=abc123
+exact=$(printf '14\t21\tabc123\n19\t21\tabc123')
+[[ $("$script" 20 2>/dev/null) == "$exact" ]] || { echo "✗ all children closed: lines differ from one per child"; fail=1; }
+
+# A closing PR that was never merged yields no line, with a warning.
+export FAKE_SUBS='[{"number":14,"state":"closed","title":"a"}]' FAKE_ISSUE_PRS='{"closedByPullRequestsReferences":[{"number":21}]}' FAKE_MERGE_SHA=''
+out=$("$script" 20 2>&1)
+[[ $out == *"#14 is closed by unmerged PR #21"* && $out != *$'14\t'* ]] || { echo "✗ unmerged PR: $out"; fail=1; }
+# A child with no closing PR warns, and gets no line.
 no_pr='[{"number":14,"state":"closed","title":"a"}]'
 export FAKE_ISSUE_PRS='{"closedByPullRequestsReferences":[]}'
 out=$(FAKE_SUBS=$no_pr FAKE_MERGE_SHA=x "$script" 20 2>&1)
@@ -44,6 +52,7 @@ out=$(FAKE_SUBS=$no_pr FAKE_MERGE_SHA=x "$script" 20 2>&1)
 out=$(FAKE_SUBS=$closed "$script" "20/../x" 2>&1) && { echo "✗ path in parent accepted: $out"; fail=1; }
 
 expect fail "no children" "[]" "no child issues"
+expect fail "two children open" '[{"number":14,"state":"open","title":"First"},{"number":19,"state":"open","title":"Second"},{"number":20,"state":"closed","title":"Done"}]' "#14 First"
 expect fail "one child open" '[{"number":14,"state":"closed","title":"a"},{"number":19,"state":"open","title":"Refuse me"}]' "#19 Refuse me"
 
 ((fail)) && exit 1
