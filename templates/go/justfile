@@ -1,6 +1,13 @@
 set shell := ["bash", "-euo", "pipefail", "-c"]
 
+# Project settings live in the project-owned `project.env`, so this file stays
+# identical to the template. A missing file keeps the defaults.
+set dotenv-load
+set dotenv-filename := "project.env"
+
 cover_min := "80"
+# Extra build tags for `test` and `cover`, comma-separated: TEST_TAGS in project.env.
+test_tags := env("TEST_TAGS", "")
 
 default: check
 
@@ -17,7 +24,7 @@ lint:
     golangci-lint run
 
 test:
-    go test -race -shuffle=on ./...
+    go test -race -shuffle=on -tags "{{test_tags}}" ./...
 
 # Adapters against real Postgres/NATS (testcontainers, needs Docker).
 test-integration:
@@ -26,7 +33,7 @@ test-integration:
 # Unit-test coverage across packages. Left out of the threshold: cmd/ (wiring
 # only), generated code, and infrastructure adapters, which `test-integration` covers.
 cover:
-    go test -race -shuffle=on -coverpkg=./... -coverprofile=coverage.out ./...
+    go test -race -shuffle=on -tags "{{test_tags}}" -coverpkg=./... -coverprofile=coverage.out ./...
     grep -vE '/cmd/|/sqlcgen/|\.pb\.go:|/adapters/(postgres|nats|grpc)/|/platform/(postgres|nats)/' coverage.out > coverage.logic.out
     go tool cover -func=coverage.logic.out | awk -v min={{cover_min}} '/^total:/ { sub("%", "", $3); if ($3 + 0 < min) { printf "coverage %s%% is below %s%%\n", $3, min; exit 1 } printf "coverage %s%%\n", $3 }'
 

@@ -49,7 +49,7 @@ Work on a `chore/project-init` branch.
 5. Fill every placeholder (`{{UPPER_CASE}}`): `AGENTS.md`, `SPEC.md`, `release-please-config.json` (`RELEASE_TYPE` is `go` or `python`), `.goreleaser.yaml` and the Go `Dockerfile` (`BINARY`: the directory name under `cmd/`), the Python `Dockerfile` (`ENTRYPOINT`). `CODEQL_LANGUAGE` (`go` or `python`) in `security.yml`. `STANDARDS_FILE` is the kept `docs/standards/*.md`. A section the interview left empty says "None yet" rather than an invented answer.
 6. Write `docs/adr/0001-<language>-as-primary-language.md` using the format in the `domain-modeling` skill's `ADR-FORMAT.md`.
 7. `mise install`, then initialise the module with a minimal entry point for the chosen shape and a passing test that covers it, so the gate has something to run:
-   - Go: `go mod init <module path>`, `cmd/<name>/main.go` (wiring only), the first context as `internal/<context>/{domain,app,adapters}`.
+   - Go: `go mod init <module path>`, `cmd/<name>/main.go` (wiring only), the first context as `internal/<context>/{domain,app,adapters}`. Test suites behind build tags go in a `project.env` at the root (`TEST_TAGS=integration,e2e`), so `just test` and `just cover` run them.
    - Python: `uv init --package <name>`, merge `pyproject.tools.toml` into `pyproject.toml` and delete it, `uv add --dev ruff ty pytest pytest-cov`, tests under `tests/`.
 8. Replace `README.md` with a project README: pitch, prerequisites (`mise install`, `lefthook install`), the `just` commands, links to `SPEC.md` and `AGENTS.md`, and the `RELEASE_PLEASE_TOKEN` note from the template README.
 9. Delete `.agents/skills/project-init/`: it is single-use.
