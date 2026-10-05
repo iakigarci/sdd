@@ -54,13 +54,11 @@ class Settings(unittest.TestCase):
             self.assertIn(rule, settings["permissions"]["deny"])
 
     def test_justfiles_have_fast_recipe(self) -> None:
-        # Generated projects: templates/*/justfile carry the shared fast gate.
-        # The template's root justfile gates only its own scripts, so it names
-        # its own fast recipe instead.
+        # The template repo: templates/*/justfile carry the shared fast gate, and
+        # its root justfile names its own. A generated project has no templates/
+        # (project-init deletes it); its root justfile is the copied one.
         repo = HOOKS.parent.parent
-        justfiles = list(repo.glob("templates/*/justfile"))
-        self.assertTrue(justfiles, "no justfile found")
-        for justfile in justfiles:
+        for justfile in repo.glob("templates/*/justfile"):
             with self.subTest(justfile=str(justfile.relative_to(repo))):
                 self.assertIn("fast: fmt-check lint test", justfile.read_text().splitlines())
         self.assertRegex((repo / "justfile").read_text(), r"(?m)^fast:")
