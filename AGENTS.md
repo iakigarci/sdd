@@ -12,17 +12,8 @@
 
 Every gate is a `just` recipe (`justfile`), run the same locally and in CI. Done means `just check` passed in this session.
 
-## Token budget
+## Logging
 
-- Chat replies use the `caveman` skill at `full` level. Code, comments, commits, PRs, issues and docs stay normal prose.
-- When `rtk` is on PATH and your agent has no rtk hook, run noisy commands through it: `rtk git diff`, `rtk go test ./...`, `rtk golangci-lint run`.
-- Read the part of a file you need, and search before reading whole files.
-
-## Working rules
-
-- Read the file, run the command, or say it is unknown: repo APIs, paths, command output and test results come from the repo, never from memory.
-- A requirement the spec leaves open becomes an `ASSUMP-#` backed by a test (see `/implement`).
-- Touch only what the task needs; leave unrelated code as you found it.
 - Logs carry IDs, never secrets or personal data.
 
 ## Git and pull requests
@@ -35,7 +26,6 @@ Every change reaches `main` as a PR the user reviews; hooks, CI and the `main` r
 
 ## Workflow
 
-`/grill-with-docs` → `/to-spec` → `/to-tickets` → `/implement` → `/code-review` → PR body via the `pr` skill.
 `/diagnosing-bugs` for hard bugs, `/improve-codebase-architecture` every few days, `/handoff` to continue in a fresh session.
 The small-feature, big-feature and hotfix tracks, and the human checkpoint, are in `docs/workflow.md`.
 
