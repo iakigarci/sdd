@@ -47,4 +47,4 @@ Local changes: the tool-call rule allows one short progress line on multi-step w
 
 ## Own
 
-project-init
+project-init, close-epic

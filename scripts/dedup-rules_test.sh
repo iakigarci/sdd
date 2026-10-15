@@ -7,6 +7,7 @@
 set -uo pipefail
 
 root=$(git -C "$(dirname "$0")" rev-parse --show-toplevel)
+agents="$root/AGENTS.md"
 readme="$root/README.md"
 standards="$root/docs/CODING_STANDARDS.md"
 gostd="$root/docs/standards/go.md"
@@ -123,6 +124,21 @@ forbid "$standards" 'Structured logs' 'structured logging (golang-observability)
 forbid "$gostd" 'ErrX' 'the sentinel naming rule (golang-naming)'
 forbid "$gostd" 'race detector' 'the race rule (golang-concurrency)'
 forbid "$gostd" 'injected rather than global' 'the logging injection rule (golang-observability)'
+
+# AGENTS.md states project facts, not the template owner's personal chat
+# style, tool habits or engineering dispositions: those live once in the
+# owner's own ~/.claude/CLAUDE.md, outside this repo, not per project.
+forbid "$agents" 'caveman' 'the chat-style preference (owner-level, not per project)'
+forbid "$agents" 'rtk ' 'the rtk wrapping habit (owner-level, not per project)'
+forbid "$agents" 'never from memory' 'the no-memory-claims habit (owner-level, not per project)'
+forbid "$agents" 'Touch only what the task needs' 'the touch-only-what-changes habit (owner-level, not per project)'
+# The Workflow section points to docs/workflow.md's three tracks instead of
+# restating one chain: the chain is only the Big-feature track, and Small
+# feature / Hotfix follow shorter paths (docs/workflow.md).
+forbid "$agents" 'to-tickets.*→.*implement.*→.*code-review' 'the workflow chain (link to docs/workflow.md instead)'
+want "$root/.agents/skills/VENDORED.md" 'project-init, close-epic' 'close-epic listed as an Own skill'
+want "$root/.agents/skills/project-init/SKILL.md" 'golang-\*.*LICENSE-samber' 'the golang-* skill deletion step'
+want "$root/.agents/skills/project-init/SKILL.md" 'modern-python.*LICENSE-trailofbits' 'the modern-python skill deletion step'
 
 ((fail)) && exit 1
 echo "dedup-rules: all checks pass"

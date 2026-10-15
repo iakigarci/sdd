@@ -46,6 +46,7 @@ Work on a `chore/project-init` branch.
    - No gRPC → no `buf.yaml`. gRPC → `buf config init` under `api/proto`, plus `buf.gen.yaml` for Go output.
    - No Postgres or NATS → delete the `integration` job in `ci.yml` and the `test-integration` recipe.
    - Private repo without GitHub Code Security → delete the `dependency-review` and `codeql` jobs and the `pull_request` trigger from `security.yml` (keep `scheduled-scan`).
+   - Language chosen is Go → delete `.agents/skills/modern-python/` and `.agents/skills/LICENSE-trailofbits`. Language chosen is Python → delete every `.agents/skills/golang-*/` directory and `.agents/skills/LICENSE-samber`.
 5. Fill every placeholder (`{{UPPER_CASE}}`): `AGENTS.md`, `SPEC.md`, `release-please-config.json` (`RELEASE_TYPE` is `go` or `python`), `.goreleaser.yaml` and the Go `Dockerfile` (`BINARY`: the directory name under `cmd/`), the Python `Dockerfile` (`ENTRYPOINT`). `CODEQL_LANGUAGE` (`go` or `python`) in `security.yml`. `STANDARDS_FILE` is the kept `docs/standards/*.md`. A section the interview left empty says "None yet" rather than an invented answer.
 6. Write `docs/adr/0001-<language>-as-primary-language.md` using the format in the `domain-modeling` skill's `ADR-FORMAT.md`.
 7. `mise install`, then initialise the module with a minimal entry point for the chosen shape and a passing test that covers it, so the gate has something to run:

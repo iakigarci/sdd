@@ -19,7 +19,7 @@ The rules are in [CODING_STANDARDS → Branches and pull requests](docs/CODING_S
 
 ## Token reduction
 
-The rules are in [AGENTS.md → Token budget](AGENTS.md#token-budget). Setup for the tool-output layer, once per machine:
+Chat style and tool-output wrapping are personal preferences, set once in your own `~/.claude/CLAUDE.md`, not a per-project rule. Setup for the tool-output layer, once per machine:
 
 - [`rtk`](https://github.com/rtk-ai/rtk): `mise use -g rtk`, then `rtk init -g --hook-only --auto-patch` (Claude Code), `rtk init -g --codex`, `rtk init -g --agent cursor`, or `rtk init -g --gemini`.
 - `caveman` is vendored in `.agents/skills/caveman`; `/caveman lite` or `/caveman off` changes its level.
