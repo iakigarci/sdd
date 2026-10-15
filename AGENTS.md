@@ -12,7 +12,7 @@
 
 Every gate is a `just` recipe (`justfile`), run the same locally and in CI. Done means `just check` passed in this session.
 
-## Working rules
+## Logging
 
 - Logs carry IDs, never secrets or personal data.
 

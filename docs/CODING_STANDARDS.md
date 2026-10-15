@@ -61,7 +61,7 @@ Tools a `just` recipe fetches from the network are pinned to an exact version: `
 
 ## Logging and observability
 
-- Log content rule for agents and code alike: [AGENTS.md](../AGENTS.md#working-rules).
+- Log content rule for agents and code alike: [AGENTS.md](../AGENTS.md#logging).
 - Services expose health endpoints and emit counters/histograms for request rate, errors and latency.
 - Go logging and metrics: [`golang-observability`](../.agents/skills/golang-observability/SKILL.md).
 
